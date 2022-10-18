@@ -1,8 +1,9 @@
 /**
  * @name GifPlayer
- * @version 1.0
+ * @version 1.1
  * @author Artur Papikian
  * @description small GIF controller
+ * @licence MIT
  *
  */
 
@@ -29,6 +30,7 @@ class GifPlayer {
         debug: false,
         autoplay: false,
         direction: GifPlayer.states.FORWARD,
+        reversed: false
 
     }
 
@@ -52,8 +54,9 @@ class GifPlayer {
 
         this.#vars.canvas = document.querySelector(canvasSelector)
         this.#vars.url = url
-        this.#vars.direction = config.player && config.player.direction ? config.player.direction : this.#vars.direction
+        this.direction = config.player && config.player.direction ? config.player.direction : this.#vars.direction
         this.#vars.autoplay = config.player && config.player.autoplay ? config.player.autoplay : this.#vars.autoplay
+        this.#vars.reversed = this.#vars.direction !== GifPlayer.states.BACKWARD
 
         this.#init().then()
     }
@@ -81,7 +84,7 @@ class GifPlayer {
 
     //CONTROLLERS
     play(){
-        return new Promise(async resolve => {
+        new Promise(async resolve => {
             await this.#onload().catch(er => {
                 throw new Error(er)
             })
@@ -95,7 +98,7 @@ class GifPlayer {
 
 
     pause() {
-        return new Promise(async resolve => {
+        new Promise(async resolve => {
             await this.#onload().catch(er => {
                 throw new Error(er)
             })
@@ -104,17 +107,17 @@ class GifPlayer {
                 this.#vars.state = GifPlayer.states.PAUSED
                 resolve()
             }
-
         })
     }
 
     async play_backward(){
-        this.#vars.direction = GifPlayer.states.BACKWARD
+        this.direction = GifPlayer.states.BACKWARD
         await this.play()
+
     }
 
     async play_forward(){
-        this.#vars.direction = GifPlayer.states.FORWARD
+        this.direction = GifPlayer.states.FORWARD
         await this.play()
     }
 
@@ -125,17 +128,39 @@ class GifPlayer {
         await this.pause()
         if(this.#vars.direction === GifPlayer.states.FORWARD && this.#vars.currIndex !== 0) await this.set_frame(0)
         else if(this.#vars.currIndex !== this.#vars.frames.length - 1) await this.set_frame(this.#vars.frames.length -1)
+
     }
 
     //SETTERS
-    set_frame(index = this.#vars.currIndex){
+    set direction(direction){
+        const frame = this.#vars.frames[this.#vars.currIndex]
+        if(direction === GifPlayer.states.BACKWARD){
+            if(this.#vars.reversed !== true) { this.#vars.frames.reverse() }
+            this.#vars.direction = direction
+            this.#vars.reversed = true
+        }
+        else if(direction === GifPlayer.states.FORWARD){
+            if(this.#vars.reversed === true) this.#vars.frames.reverse()
+            this.#vars.direction = direction
+            this.#vars.reversed = false
+        }
+        this.set_frame(this.#vars.frames.indexOf(frame))
+    }
+
+    async set_frame(index = this.#vars.currIndex){
         return new Promise(async resolve => {
             await this.#onload().catch(er => {
                 throw new Error(er)
             })
 
             if(this.#vars.state !== GifPlayer.states.ERROR){
-                this.#vars.currIndex = (typeof index === 'number') && (index >= 0 && index < this.#vars.frames.length) ? index : this.#vars.currIndex
+
+                if((typeof index === 'number') && (index >= 0 && index < this.#vars.frames.length)){
+                    this.#vars.currIndex = index
+                    this.#vars.currIndex = this.#vars.reversed === true ? this.frames_length - this.#vars.currIndex - 1 : this.#vars.currIndex
+                    console.log(this.#vars.currIndex)
+                }
+
                 if(this.#vars.state !== GifPlayer.states.PLAYING) this.#draw()
             }
             resolve()
@@ -143,16 +168,16 @@ class GifPlayer {
     }
 
     //GETTERS
-    get all()                   { return this.#vars }
-    get canvas()                { return this.#vars.canvas}
-    get state()                 { return this.#vars.state }
-    get frames_length()         { return this.#vars.frames.length }
-    get current_frame_index()   { return this.#vars.currIndex }
-    get_frame(id)               { return (id >= 0 && id < this.#vars.frames.length) ? this.#vars.frames[id] : this.#vars.frames[this.#vars.currIndex] }
+    get all()                       { return this.#vars }
+    get canvas()                    { return this.#vars.canvas }
+    get state()                     { return this.#vars.state }
+    get frames_length()             { return this.#vars.frames.length }
+    get current_frame_index()       { return this.#vars.currIndex }
+    get_frame(index)                { return (index >= 0 && index < this.#vars.frames.length) ? this.#vars.frames[index] : this.#vars.frames[this.#vars.currIndex] }
 
     //LOAD & PARSE
     #loadGif() {
-        return new Promise(resolve => {
+         return new Promise(resolve => {
             const xhr = new XMLHttpRequest()
             xhr.open('GET', this.#vars.url)
             xhr.responseType = 'blob'
@@ -219,7 +244,7 @@ class GifPlayer {
     }
 
     #loadGifFrames(src){
-        return new Promise(resolve => {
+         return new Promise(resolve => {
             let frame = new Image()
             frame.src = src
             frame.onload = ()=> {
@@ -240,8 +265,7 @@ class GifPlayer {
             this.#vars.pauseTriggered = false
             return
         }
-        if(this.#vars.direction === GifPlayer.states.FORWARD) this.#vars.currIndex = this.#vars.currIndex === this.#vars.frames.length - 1 ? 0 : ++this.#vars.currIndex
-        else this.#vars.currIndex = this.#vars.currIndex === 0 ? this.#vars.frames.length - 1 : --this.#vars.currIndex
+        this.#vars.currIndex = this.#vars.currIndex === this.#vars.frames.length - 1 ? 0 : ++this.#vars.currIndex
 
         this.#draw()
         requestAnimationFrame(() => this.#animate())
@@ -249,7 +273,7 @@ class GifPlayer {
 
     //TOOLS
     #onload(){
-        return new Promise(async (resolve, reject) => {
+         return new Promise(async (resolve, reject) => {
             if (this.#vars.state === GifPlayer.states.LOADING) {
                 const timeout   = 5000
                 let begin       = (performance || Date).now()
