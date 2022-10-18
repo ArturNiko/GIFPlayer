@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scroll</title>
+    <style>
+    </style>
+</head>
+<body style="margin: 0;">
+    <section></section>
+    <canvas id="gif" style="position: fixed; top: 0; width: 100vw; height: 100vh; z-index: -1"></canvas>
+    <script type="module" src="bundles/Extender.js"> </script>
+    <script type="text/javascript" src="GifPlayer.js"> </script>
+
+    <script type="text/javascript">
+        window.onbeforeunload = () => window.scrollTo({top:0})
+
+        const player = new GifPlayer('media/test.gif', '#gif', {
+            player:{
+                autoplay: true,
+                direction: GifPlayer.states.BACKWARD
+            },
+        })
+    </script>
+    </body>
+</html>
