@@ -26,11 +26,11 @@ git player, which allows to control/draw every single frame separately.<br/><br/
 `get_frame(index)` also I getter but it's function because you have to pass frame index you want to get<br/>
 
 **Controls**<br/>
-`play` play the gif<br/>
-`play_forward` set direction to GifPlayer.states.FORWARD and play<br/>
-`play_backward` set direction to GifPlayer.states.BACKWARD and play<br/>  
+`play()` play the gif<br/>
+`play_forward()` set direction to GifPlayer.states.FORWARD and play<br/>
+`play_backward()` set direction to GifPlayer.states.BACKWARD and play<br/>  
 `pause` pause the gif<br/>
-`stop` pause the gif and jump back to the first frame<br/><br/>
+`stop()` pause the gif and jump back to the first frame<br/><br/>
 
 
 3~ **Global Vars**<br/>
