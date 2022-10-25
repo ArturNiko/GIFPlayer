@@ -8,20 +8,37 @@
 </head>
 <body style="margin: 0;">
     <section></section>
-    <canvas id="gif" style="position: fixed; top: 0; width: 100vw; height: 100vh; z-index: -1"></canvas>
-    <script type="text/javascript" src="bundles/Extender.js"> </script>
-    <script type="text/javascript" src="player/GifPlayer.js"> </script>
+    <canvas id="gif-1" style="position: fixed; width: 50vw; height: 50vh; z-index: -1"></canvas>
+    <canvas id="gif-2" style="position: fixed; right: 0; width: 50vw; height: 50vh; z-index: -1;"></canvas>
+    <canvas id="gif-3" style="position: fixed; right: 0; bottom: 0; width: 50vw; height: 50vh; z-index: -1;"></canvas>
+    <script type="module" async>
+        import {GIFPlayerV2} from "./player/GIFPlayerV2.js"
 
-    <script type="text/javascript">
-
-        window.onbeforeunload = () => window.scrollTo({top:0})
-
-        const player = new GifPlayer('media/test.gif', '#gif', {
+        window.player1 = new GIFPlayerV2('media/facepalm.gif', '#gif-1', {
             player:{
-                autoplay: true,
-                direction: GifPlayer.states.BACKWARD
+                autoplay: false,
+                direction: GIFPlayerV2.states.BACKWARD,
+                fps: 20,
+                frame: 11
             },
         })
+
+        window.player2 = new GIFPlayerV2('media/giphy.gif', '#gif-2', {
+            player:{
+                autoplay: true,
+
+            },
+        })
+        window.player3 = new GIFPlayerV2('media/hipster_runner.gif', '#gif-3', {
+            player:{
+                autoplay: true,
+            },
+        })
+
+        setTimeout(() => player1.play() , 2000)
+        player2.stop()
+        player3.fps = 10
+
 
     </script>
     </body>
