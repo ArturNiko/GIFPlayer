@@ -5,6 +5,10 @@
 
 GIF player, which allows you to control/draw every single frame separately.<br/><br/>
 
+<h2>0~ Installation</h2>
+
+`npm i js-gif-player --save`<br><br>
+
 <h2>1~ Parameters</h2>
 
 <ul>
