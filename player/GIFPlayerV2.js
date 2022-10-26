@@ -138,3 +138,4 @@ export class GIFPlayerV2{
 
 }
 
+module.exports.GIFPlayerV2 = GIFPlayerV2
