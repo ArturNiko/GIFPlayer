@@ -1,0 +1,28 @@
+{
+  "name": "js-gifplayer",
+  "version": "2.0.1",
+  "description": "GIF player, which allows you to control/draw every single frame separately.",
+  "main": "player/GIFPlayerV2.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArturNiko/GIFPlayer.git"
+  },
+  "keywords": [
+    "gif",
+    "player",
+    "gif-player",
+    "js"
+  ],
+  "author": "Artur Papikian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArturNiko/GIFPlayer/issues"
+  },
+  "homepage": "https://github.com/ArturNiko/GIFPlayer#readme"
+}
