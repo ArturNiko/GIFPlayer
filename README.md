@@ -7,7 +7,7 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 
 <h2>0~ Installation</h2>
 
-`npm i js-gif-player --save`<br><br>
+`npm i js-gifplayer --save`<br><br>
 
 <h2>1~ Parameters</h2>
 
