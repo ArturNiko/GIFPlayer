@@ -2,7 +2,7 @@
   "name": "js-gifplayer",
   "version": "2.0.1",
   "description": "GIF player, which allows you to control/draw every single frame separately.",
-  "main": "player/GIFPlayerV2.js",
+  "main": "src/GIFPlayerV2.js",
   "directories": {
     "example": "examples"
   },
