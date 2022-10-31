@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scroll</title>
+    <style>
+    </style>
+</head>
+<body style="margin: 0;">
+    <section></section>
+    <canvas id="gif-1" style="position: fixed; width: 50vw; height: 50vh; z-index: -1"></canvas>
+    <canvas id="gif-2" style="position: fixed; right: 0; width: 50vw; height: 50vh; z-index: -1;"></canvas>
+    <canvas id="gif-3" style="position: fixed; right: 0; bottom: 0; width: 50vw; height: 50vh; z-index: -1;"></canvas>
+    <script type="module" async>
+        import {GIFPlayerV2} from "../src/GIFPlayerV2.js"
+
+
+        window.player1 = new GIFPlayerV2('../media/facepalm.gif', '#gif-1', {
+            player:{
+                autoplay: false,
+                direction: GIFPlayerV2.states.BACKWARD,
+                fps: 20,
+                frame: 11
+            },
+        })
+
+        window.player2 = new GIFPlayerV2('../media/giphy.gif', '#gif-2', {
+            player:{
+                autoplay: true,
+
+            },
+        })
+        window.player3 = new GIFPlayerV2('../media/hipster_runner.gif', '#gif-3', {
+            plugins: ['scroller'],
+            scroller: {
+                target: document.body,
+                flow: [
+                    0,
+                    .4,
+                    .8,
+                    .6,
+                    1
+                ]
+
+            }
+        })
+
+        setTimeout(() => player1.play() , 2000)
+        player2.stop()
+
+
+
+    </script>
+    </body>
+</html>
