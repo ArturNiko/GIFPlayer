@@ -20,7 +20,13 @@ export default {
         if (this.helpers.isCanvas(document.querySelector(canvasSelector)) !== true) throw new Error('Invalid canvas element.')
 
         if (typeof config.player.fps != 'undefined' && !(typeof config.player.fps == 'number' && Math.ceil(config.player.fps) >= 0))
-            throw new Error('Passed FPS limiter must be a number and higher than 0.')
+            throw new Error('Passed FPS limiter must be a number and greater than 0.')
+
+        if(typeof config.plugins != "undefined" && Array.isArray(config.plugins) !== true) {
+                console.warn("Plug-ins should be passed in an array.")
+                config.plugins = [config.plugins]
+        }
+        else if(typeof config.plugins == "undefined") config.plugins = []
 
     },
 
@@ -33,12 +39,21 @@ export default {
         this.parent.vars.ctx = this.parent.vars.canvas.getContext('2d')
         this.parent.vars.url = url
 
-
         this.parent.vars.autoplay = config.player.autoplay === true
         this.parent.vars.currIndex = this.helpers.isWholeNumber(config.player.frame) ? config.player.frame : this.parent.vars.currIndex
         this.parent.vars.fps = config.player.fps ?? Math.ceil(this.parent.vars.fps)
 
-        this.init(config).then()
+        this.parent.vars.plugins.passed = config.plugins
+        Object.entries(config).forEach(entry => {
+            const [key, value] = entry
+            if(key !== 'player' && key !== 'plugins') {
+                this.parent.vars.plugins.config[key] = value
+                delete config[key]
+            }
+        })
+
+
+        this.init(config).then(_ => this.lookForPlugins())
     },
 
     //INIT

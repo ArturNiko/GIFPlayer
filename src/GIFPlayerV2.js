@@ -1,5 +1,5 @@
 /**
- * @name GIFPlayer
+ * @name GIFPlayerV2
  * @version 2.0
  * @author Artur Papikian
  * @description small GIF controller
@@ -7,14 +7,14 @@
  *
  */
 
+
 import GIFLoader from "./exports/Loader.js"
 import GIFPlayer from "./exports/Player.js"
-
-
+import PluginsController from "./exports/PluginsController.js"
 
 export class GIFPlayerV2{
 
-    static states = Object({
+    static states = Object.freeze({
         LOADING: 'loading',
         READY: 'ready',
         PAUSED: 'pause',
@@ -24,6 +24,10 @@ export class GIFPlayerV2{
         FORWARD: 'forward',
         BACKWARD: 'backward',
     })
+
+     static AllPlugins = [
+         'scroller'
+     ]
 
     vars = {
         canvas: {},
@@ -35,14 +39,22 @@ export class GIFPlayerV2{
         state: 'loading',
         pauseTriggered: false,
         autoplay: false,
-        direction: 'forward',
+        direction: GIFPlayerV2.states.FORWARD,
+        plugins: {
+            config: {},
+            passed: [],
+            loaded: []
+        }
+
     }
 
+    passedConfig = {}
 
+    //Background methods
     background = {}
 
     constructor(url, canvasSelector, config) {
-        Object.assign(this.background, GIFPlayer, GIFLoader)
+        Object.assign(this.background, GIFPlayer, GIFLoader, PluginsController)
         this.background.construct(url, canvasSelector, config, this)
     }
 
@@ -138,4 +150,4 @@ export class GIFPlayerV2{
 
 }
 
-module.exports.GIFPlayerV2 = GIFPlayerV2
+//module.exports.GIFPlayerV2 = GIFPlayerV2
