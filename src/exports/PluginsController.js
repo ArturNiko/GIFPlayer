@@ -2,7 +2,6 @@ import {GIFPlayerV2} from "../GIFPlayerV2.js";
 
 export default {
 
-
     lookForPlugins: function (){
         this.parent.vars.plugins.passed.forEach(plugIn => {
             if (GIFPlayerV2.AllPlugins.includes(plugIn)) {
