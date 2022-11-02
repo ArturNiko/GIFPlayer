@@ -1,6 +1,6 @@
 /**
  * @name GIFPlayerV2
- * @version 2.0
+ * @version 2.2
  * @author Artur Papikian
  * @description small GIF controller
  * @licence MIT
@@ -93,7 +93,6 @@ export class GIFPlayerV2{
     }
 
     async stop(){
-        await this.background.awaitGIFLoad()
         await this.pause()
         this.frame = 0
     }
