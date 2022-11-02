@@ -25,9 +25,10 @@ export class GIFPlayerV2{
         BACKWARD: 'backward',
     })
 
-    static AllPlugins = [
-        'scroller'
-    ]
+    static AllPlugins = Object.freeze({
+        scroller: 'scroller'
+    })
+
 
     vars = {
         canvas: {},

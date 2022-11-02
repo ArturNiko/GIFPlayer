@@ -91,6 +91,12 @@ FORWARD: 5, //play direction states
 BACKWARD: 6,
 })
 ```
+
+```
+static AllPlugins = Object.freeze({
+    scroller: 'scroller'
+})
+```
 <br>
 
 <h2>4~ Plug Ins</h2>
