@@ -110,6 +110,7 @@ options:
 </ul>
 </li>
 </ul>
+<br>
 
 <h2>5~ Note</h2>
 <p>
