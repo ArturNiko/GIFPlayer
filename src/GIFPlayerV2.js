@@ -149,4 +149,4 @@ export class GIFPlayerV2{
 
 }
 
-//module.exports.GIFPlayerV2 = GIFPlayerV2
+if(typeof module != "undefined") module.exports.GIFPlayerV2 = GIFPlayerV2
