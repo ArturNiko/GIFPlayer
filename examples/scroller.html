@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scroller</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 300vh;
+        }
+    </style>
+</head>
+<body>
+<canvas id="scroller" style="width: 100vw; height: 100vh; position: fixed"></canvas>
+</body>
+<script type="module">
+    import {GIFPlayerV2} from "../src/GIFPlayerV2.js"
+
+
+    window.player = new GIFPlayerV2('../media/fight.gif', '#scroller', {
+        plugins: ['scroller'],
+        scroller: {
+            flow: [0, 0.4, 0.8, 1, .6],
+            target: window,
+        }
+    })
+
+
+</script>
+</html>
