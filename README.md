@@ -14,17 +14,42 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 <ul>
 <li>GIF link</li>
 <li>canvas selector</li>
-<li>options:<br><br>
+<li>options:<br>
 
-`player: {...}` This is the workspace where we are going to assign our parameters.<br>
-&emsp;&emsp;&emsp;`fps:` sets fps. Default is 60<br>
-&emsp;&emsp;&emsp;`frame:` sets starting frame (if passed index is invalid, player will run from default value). Default is 0<br>
-&emsp;&emsp;&emsp;`autoplay:` sets autoplay. Default is false.<br>
-&emsp;&emsp;&emsp;`direction:` `GIFPlayerV2.states.BACKWARD` || `GIFPlayerV2.states.FORWARD` sets the play direction. Default is `GIFPlayerV2.states.FORWARD`.
+<ul>
+<li>
+
+`player: {...}` This is the workspace where we are going to assign our parameters.
+</li>
+<li>
+
+`fps:` sets fps. Default is 60
+</li>
+<li>
+
+`frame:` sets starting frame (if passed index is invalid, player will run from default value). Default is 0
+</li>
+<li>
+
+`autoplay:` sets autoplay. Default is false.
+</li>
+<li>
+
+`direction:` `GIFPlayerV2.states.BACKWARD` || `GIFPlayerV2.states.FORWARD` sets the play direction. Default is `GIFPlayerV2.states.FORWARD`.
+</li><br>
+<li>
+
+`plugins`: binds built-in plug-ins `[GIFPlayer.AllPlugins.PLG_NAME...]`.
+</li>
+<li>
+
+`PLG_NAME: { ... }` set up plug in config.
+</li>
+</ul>
 
 </li>
 </ul>
-<br/>
+<br>
 
 <h2>2~ Functions</h2>
 
@@ -68,7 +93,25 @@ BACKWARD: 6,
 ```
 <br>
 
-<h2>4~ Note</h2>
+<h2>4~ Plug Ins</h2>
+Currently exists only 1 plug-in
+<ul>
+<li>
+Name: Scroller<br>
+Description: synchron play-on-scroll animation<br>
+options:
+<ul>
+<li>
+<code>flow</code> sets the animation flow during scrolling. Default <code>[0, 1]</code>.
+</li>
+<li>
+<code>target</code> sets the scrolling element.
+</li>
+</ul>
+</li>
+</ul>
+
+<h2>5~ Note</h2>
 <p>
 Some GIFs may have artifacts when running backwards.<br>
 The most common reason is compression, which removes unchanged pixels from the next frame.

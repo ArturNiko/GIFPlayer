@@ -55,12 +55,15 @@ export default {
                     throw new Error("Couldn't parse the GIF")
                 }
                 pos++
-                if(!(gif[pos] && gif[pos] !== 0x3b)) this.parent.vars.state = GIFPlayerV2.states.READY
+                if(!(gif[pos] && gif[pos] !== 0x3b)) {
+                    this.parent.vars.state = GIFPlayerV2.states.READY
+                    return
+                }
             }
         }
         else {
             this.parent.vars.state = GIFPlayerV2.states.ERROR
-            throw new Error("Exstansion not supported.")
+            throw new Error("Extension not supported.")
         }
     },
 
