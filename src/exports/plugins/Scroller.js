@@ -1,6 +1,6 @@
 /**
  * @name Scroller
- * @version 1.0
+ * @version 1.0.1
  * @author Artur Papikian
  * @description synchron play-on-scroll animation
  * @licence MIT
@@ -49,14 +49,17 @@ export default {
             = this.parent.pause
             = this.parent.stop
             = function () { console.warn('This function was overwritten by the plug-in') }
+
+        this.parent.vars.flow = this.config.flow
     },
 
     reverse: function () {
-        this.config.flow.reverse()
+        this.vars.plugins.loaded.scroller.config.flow.reverse()
+        this.vars.plugins.loaded.scroller.calculate()
     },
 
     precalculate: function () {
-        this.calculate('prim')
+        this.calculate()
 
         this.config.scrollZonesHeight = this.config.scrollHeight / this.config.flow.length
 
@@ -74,7 +77,7 @@ export default {
             this.config.scrollTop = this.config.target.scrollTop
         }
 
-        if (call !== 'prim') this.findScrollZone()
+        setTimeout(() => this.findScrollZone())
     },
 
     findScrollZone: function () {

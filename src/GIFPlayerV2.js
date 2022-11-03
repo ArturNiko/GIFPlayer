@@ -26,7 +26,8 @@ export class GIFPlayerV2{
     })
 
     static AllPlugins = Object.freeze({
-        scroller: 'scroller'
+        scroller: 'scroller',
+        controller: 'controller',
     })
 
 
@@ -44,12 +45,10 @@ export class GIFPlayerV2{
         plugins: {
             config: {},
             passed: [],
-            loaded: []
+            loaded: {}
         }
 
     }
-
-    passedConfig = {}
 
     //Background methods
     background = {}
