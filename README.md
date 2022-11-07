@@ -12,9 +12,9 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 <h2>1~ Parameters</h2>
 
 <ul>
-<li>GIF link</li>
-<li>canvas selector</li>
-<li>options:<br>
+<li>GIF link.</li>
+<li>Canvas selector.</li>
+<li>Options:<br>
 
 <ul>
 <li>
@@ -23,11 +23,11 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 </li>
 <li>
 
-`fps:` sets fps. Default is 60
+`fps:` sets fps. Default is 60.
 </li>
 <li>
 
-`frame:` sets starting frame (if passed index is invalid, player will run from default value). Default is 0
+`frame:` sets starting frame (if passed index is invalid, player will run from default value). Default is 0.
 </li>
 <li>
 
@@ -79,7 +79,7 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 
 <h2>3~ Global Vars</h2>
 
-```
+```javascript
 static states = Object.freeze({
 LOADING: 0,  //loading states
 READY: 1,
@@ -92,7 +92,7 @@ BACKWARD: 6,
 })
 ```
 
-```
+```javascript
 static AllPlugins = Object.freeze({
     scroller: 'scroller'
 })
@@ -100,18 +100,36 @@ static AllPlugins = Object.freeze({
 <br>
 
 <h2>4~ Plug Ins</h2>
-Currently exists only 1 plug-in
+Currently exist 2 plug-ins.
 <ul>
 <li>
-Name: Scroller<br>
-Description: synchron play-on-scroll animation<br>
-options:
+Name: Scroller.<br>
+Description: synchron play-on-scroll animation.<br>
+Options:
 <ul>
 <li>
-<code>flow</code> sets the animation flow during scrolling. Default <code>[0, 1]</code>.
+
+`flow` sets the animation flow during scrolling. Default `[0, 1]`.
 </li>
 <li>
-<code>target</code> sets the scrolling element.
+
+`target` sets the scrolling element.
+</li>
+</ul>
+</li>
+<li>
+Name: GUI.<br>
+Description: Interactive GUI Controller.<br>
+Requirements: Wrapper for the canvas and adding it into the <strong>options</strong>.<br>
+Options:
+<ul>
+<li>
+
+`wrapper` passes the wrapper of the canvas. Currently required (Element, not selector).
+</li>
+<li>
+
+`animationDuration` sets the GUI animation duration.
 </li>
 </ul>
 </li>
