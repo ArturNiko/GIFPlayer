@@ -17,12 +17,11 @@ export default {
     init: function (parent) {
         this.parent = parent
         this.config = this.parent.vars.plugins.config[this.name] ?? {}
-
-        this.parent.pause()
-        this.overwrite()
-        ///The part below is individual
         this.check()
 
+        ///The part below is individual
+        this.parent.pause()
+        this.overwrite()
         this.precalculate()
         this.config.target.addEventListener('scroll', () => this.calculate(), {passive: true})
     },
@@ -33,7 +32,7 @@ export default {
             this.config.flow = [0, 1]
         }
         else if (Array.isArray(this.config.flow) && this.config.flow.some(p => typeof p != "number")) {
-            console.warn("Flow step's values must be type of number between 0 and 1.")
+            console.warn("Flow step's values must be a number between 0 and 1.")
             this.config.flow = [0, 1]
         }
         else if (typeof this.config.flow == "undefined") this.config.flow = [0, 1]

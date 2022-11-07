@@ -17,7 +17,7 @@ export class GIFPlayerV2{
     static states = Object.freeze({
         LOADING: 'loading',
         READY: 'ready',
-        PAUSED: 'pause',
+        PAUSED: 'paused',
         PLAYING: 'playing',
         ERROR: 'error',
 
@@ -26,8 +26,8 @@ export class GIFPlayerV2{
     })
 
     static AllPlugins = Object.freeze({
-        scroller: 'scroller',
-        controller: 'controller',
+        Scroller: 'scroller',
+        Controller: 'controller',
     })
 
 

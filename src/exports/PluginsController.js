@@ -14,8 +14,8 @@ export default {
             plugin = plugin.default
             plugin.init(this.parent)
             this.parent.vars.plugins.loaded[name] = plugin
-        }).catch(_ => {
-            throw new Error('Plug-in not found.')
+        }).catch(err => {
+            throw new Error(err)
         })
     },
 
