@@ -9,7 +9,7 @@
 import {GIFPlayerV2} from "../../GIFPlayerV2.js"
 
 export default {
-    name: 'controller',
+    name: 'gui',
     parent: {},
     config: {},
     elements: {},
@@ -26,10 +26,10 @@ export default {
     },
 
     check: function () {
-        if (!(this.config.wrapper instanceof HTMLElement)) throw new Error('Wrapper should be instance of HTML Element.')
+        if (!(this.config.wrapper instanceof HTMLElement)) throw new Error('Wrapper should be an instance of HTML Element.')
         if (typeof this.config.animationDuration != 'undefined') {
             if (typeof this.config.animationDuration != 'number' || this.config.animationDuration < 0) {
-                console.warn('Duration should be a positiv number')
+                console.warn('Duration should be a positiv number.')
                 this.config.animationDuration = 500
             }
         }
@@ -100,7 +100,6 @@ export default {
                 case GIFPlayerV2.states.PLAYING:
                     this.elements.circle.style.transform = 'scale(.8)'
                     this.elements.circle.style.opacity = '0'
-                    console.log(this.config.animationDuration)
                     setTimeout(() => this.playing(), this.config.animationDuration)
 
                     break

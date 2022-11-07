@@ -27,7 +27,7 @@ export class GIFPlayerV2{
 
     static AllPlugins = Object.freeze({
         Scroller: 'scroller',
-        Controller: 'controller',
+        GUI: 'gui',
     })
 
 
