@@ -87,10 +87,14 @@ export default {
     },
 
     initEvents() {
-        this.parent.vars.canvas.addEventListener('click', () => {
+        const evToggle = () => {
             if (this.parent.vars.state === GIFPlayerV2.states.PLAYING) this.parent.pause()
             else if (this.parent.vars.state === GIFPlayerV2.states.PAUSED) this.parent.play()
-        })
+        }
+
+        this.parent.vars.canvas.addEventListener('click', evToggle)
+        this.elements.circle.addEventListener('click', evToggle)
+
     },
 
     checkState() {

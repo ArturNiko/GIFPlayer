@@ -20,7 +20,7 @@ export default {
         if (this.helpers.isCanvas(document.querySelector(canvasSelector)) !== true) throw new Error('Invalid canvas element.')
 
         if (typeof config.player.fps != 'undefined' && !(typeof config.player.fps == 'number' && Math.ceil(config.player.fps) >= 0))
-            throw new Error('Passed FPS limiter must be a number and greater than 0.')
+            throw new Error('Passed FPS limiter must be a positiv number.')
 
         if(typeof config.plugins != "undefined" && Array.isArray(config.plugins) !== true) {
                 console.warn("Plug-ins should be passed in an array.")
