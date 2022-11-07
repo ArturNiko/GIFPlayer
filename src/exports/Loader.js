@@ -41,7 +41,7 @@ export default {
                         label === 0xf9 && (graphicControl = gif.subarray(offset, pos + 1))
                     } else {
                         this.parent.vars.state = GIFPlayerV2.states.ERROR
-                        throw new Error("Couldn't parse the GIF")
+                        throw new Error("Couldn't parse the GIF.")
                     }
                 } else if (blockId === 0x2c) {
                     pos += 9
@@ -52,7 +52,7 @@ export default {
                     await this.loadGifFrames(frames.at( - 1))
                 } else {
                     this.parent.vars.state = GIFPlayerV2.states.ERROR
-                    throw new Error("Couldn't parse the GIF")
+                    throw new Error("Couldn't parse the GIF.")
                 }
                 pos++
                 if(!(gif[pos] && gif[pos] !== 0x3b)) {
@@ -83,7 +83,6 @@ export default {
             if (this.parent.vars.state === GIFPlayerV2.states.LOADING) {
                 const timeout   = 40000
                 let begin       = (performance || Date).now()
-                //setTimeout(async ()=> {},0)
                 let awaitForReady = setInterval(async ()=>{
                     if(this.parent.vars.state !== GIFPlayerV2.states.LOADING){
                         clearInterval(awaitForReady)
