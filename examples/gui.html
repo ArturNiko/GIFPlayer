@@ -5,9 +5,7 @@
     <title>gui</title>
 </head>
 <body>
-<div id="gif-1-wrapper" style="position: fixed; width: 50vw; height: 50vh;">
-    <canvas id="gif-1" style="width: 100%; height: 100%; position: absolute;"></canvas>
-</div>
+<div id="gif-1" style="position: fixed; width: 50vw; height: 50vh;"></div>
 
 <script type="module">
     import {GIFPlayerV2} from "../src/GIFPlayerV2.js"
@@ -21,9 +19,6 @@
             frame: 11
         },
         plugins: [GIFPlayerV2.AllPlugins.GUI],
-        gui: {
-            wrapper: document.getElementById('gif-1-wrapper')
-        }
     })
 
 

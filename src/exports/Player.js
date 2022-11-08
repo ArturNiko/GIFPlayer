@@ -2,7 +2,7 @@ import {GIFPlayerV2} from "../GIFPlayerV2.js";
 
 export default {
     helpers: {
-        isCanvas: function(v) { return v instanceof Element && v.tagName === 'CANVAS' },
+        isHTMLElement: function(v) { return v instanceof Element},
         isNumber: function(v) { return  typeof v == 'number' || v instanceof Number },
         isWholeNumber: function(v) { return this.isNumber(v) && v > 0 && Math.round(v) === v},
         isUndefined: function(v)  { return typeof v == 'undefined' },
@@ -17,7 +17,7 @@ export default {
     },
 
     validate: function (canvasSelector, config) {
-        if (this.helpers.isCanvas(document.querySelector(canvasSelector)) !== true) throw new Error('Invalid canvas element.')
+        if (this.helpers.isHTMLElement(document.querySelector(canvasSelector)) !== true) throw new Error('Invalid HTML element.')
 
         if (typeof config.player.fps != 'undefined' && !(typeof config.player.fps == 'number' && Math.ceil(config.player.fps) >= 0))
             throw new Error('Passed FPS limiter must be a positiv number.')
@@ -35,8 +35,7 @@ export default {
         this.validate(canvasSelector, config)
 
         this.parent = parent
-        this.parent.vars.canvas = document.querySelector(canvasSelector)
-        this.parent.vars.ctx = this.parent.vars.canvas.getContext('2d')
+        this.parent.vars.wrapper = document.querySelector(canvasSelector)
         this.parent.vars.url = url
 
         this.parent.vars.autoplay = config.player.autoplay === true
@@ -52,7 +51,7 @@ export default {
             }
         })
 
-
+        this.build()
         this.init(config).then(_ => this.lookForPlugins())
     },
 
@@ -74,6 +73,15 @@ export default {
         }
     },
 
+    build: function(){
+        this.parent.vars.canvas = document.createElement('canvas')
+        this.parent.vars.canvas.style = `
+            width: 100%;
+            height: 100%;
+        `
+        this.parent.vars.wrapper.appendChild(this.parent.vars.canvas)
+        this.parent.vars.ctx = this.parent.vars.canvas.getContext('2d')
+    },
 
     //CANVAS
     draw: function (){

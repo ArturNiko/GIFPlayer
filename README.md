@@ -9,7 +9,38 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 
 `npm i js-gifplayer --save`<br><br>
 
-<h2>1~ Parameters</h2>
+
+<h2>1~ Initialization</h2>
+
+<h3>Import</h3>
+
+``` js
+    import {GIFPlayerV2} from "../src/GIFPlayerV2.js"
+```
+
+<br>
+<h3>Usage</h3>
+
+<h4>HTML</h4>
+
+``` html
+    <div id="wrapper"></div>
+```
+
+<h4>JS</h4>
+
+``` js
+    const player = new GIFPlayer('source', '#wrappper', {
+        player: {
+            //player config
+        },
+        plugins: [/* Plug-in names */],
+        //plug-in name: { plug-in config }
+    })
+```
+
+<br>
+<h2>2~ Parameters</h2>
 
 <ul>
 <li>GIF link.</li>
@@ -51,7 +82,7 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 </ul>
 <br>
 
-<h2>2~ Functions</h2>
+<h2>3~ Functions</h2>
 
 <h3>Setters</h3>
 
@@ -63,6 +94,7 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 
 `.all` all internal states of the player.  
 `.canvas` canvas HTML element.  
+`.wrapper` wrapper element.  
 `.state` player state.  
 `.frames_length` frames count.  
 `.current_frame_index` current frame index.  
@@ -77,7 +109,7 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 `stop()` pause the GIF and jump back to the first frame.<br/>
 `reverse()` Reverse playing direction.<br/><br/>
 
-<h2>3~ Global Vars</h2>
+<h2>4~ Global Vars</h2>
 
 ```javascript
 static states = Object.freeze({
@@ -94,13 +126,26 @@ BACKWARD: 6,
 
 ```javascript
 static AllPlugins = Object.freeze({
-    scroller: 'scroller'
+    Scroller: 'scroller',
+    GUI: 'gui'
 })
 ```
 <br>
 
-<h2>4~ Plug Ins</h2>
-Currently exist 2 plug-ins.
+<h2>5~ Plug Ins</h2>
+Currently exist 2 plug-ins:
+<ul>
+<li>
+
+Scroller `GIFPlayerV2.AllPlugins.Scroller`
+</li>
+<li>
+
+GUI `GIFPlayerV2.AllPlugins.GUI`
+</li>
+</ul>
+<br>
+<strong>Note:</strong> some plug-ins overwrite functions.
 <ul>
 <li>
 Name: Scroller.<br>
@@ -120,12 +165,11 @@ Options:
 <li>
 Name: GUI.<br>
 Description: Interactive GUI Controller.<br>
-Requirements: Wrapper for the canvas and adding it into the <strong>options</strong>.<br>
 Options:
 <ul>
 <li>
 
-`wrapper` passes the wrapper of the canvas. Currently required (Element, not selector).
+`wrapper` Has been removed.
 </li>
 <li>
 
@@ -136,7 +180,7 @@ Options:
 </ul>
 <br>
 
-<h2>5~ Note</h2>
+<h2>6~ Note</h2>
 <p>
 Some GIFs may have artifacts when running backwards.<br>
 The most common reason is compression, which removes unchanged pixels from the next frame.

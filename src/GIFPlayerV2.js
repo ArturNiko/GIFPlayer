@@ -11,6 +11,7 @@
 import GIFLoader from "./exports/Loader.js"
 import GIFPlayer from "./exports/Player.js"
 import PluginsController from "./exports/PluginsController.js"
+//import Defaults from "./Defaults.js"
 
 export class GIFPlayerV2{
 
@@ -30,9 +31,9 @@ export class GIFPlayerV2{
         GUI: 'gui',
     })
 
-
     vars = {
         canvas: {},
+        wrapper: {},
         ctx: {},
         url: '',
         frames: [],
@@ -47,8 +48,9 @@ export class GIFPlayerV2{
             passed: [],
             loaded: {}
         }
-
     }
+
+    //static defaults = Defaults
 
     //Background methods
     background = {}
@@ -102,6 +104,9 @@ export class GIFPlayerV2{
         else this.direction = GIFPlayerV2.states.FORWARD
     }
 
+    //GIF Mutators
+
+
     //SETTERS
     set fps(fps){
         if(fps instanceof Number && Math.ceil(fps) <= 0) return
@@ -142,6 +147,7 @@ export class GIFPlayerV2{
     //GETTERS
     get all()                       { return this.vars }
     get canvas()                    { return this.vars.canvas }
+    get wrapper()                   { return this.vars.wrapper }
     get state()                     { return this.vars.state }
     get frames_length()             { return this.vars.frames.length }
     get current_frame_index()       { return this.vars.currIndex }
