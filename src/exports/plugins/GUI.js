@@ -1,6 +1,6 @@
 /**
- * @name Controller
- * @version 0.3
+ * @name GUI
+ * @version 0.5
  * @author Artur Papikian
  * @description synchron play-on-scroll animation
  * @licence MIT
@@ -26,7 +26,6 @@ export default {
     },
 
     check: function () {
-        if (!(this.config.wrapper instanceof HTMLElement)) throw new Error('Wrapper should be an instance of HTML Element.')
         if (typeof this.config.animationDuration != 'undefined') {
             if (typeof this.config.animationDuration != 'number' || this.config.animationDuration < 0) {
                 console.warn('Duration should be a positiv number.')
@@ -40,12 +39,13 @@ export default {
     },
 
     createElements: function () {
-        this.elements.wrapper = this.config.wrapper
         this.elements.circle = document.createElement('DIV')
 
-        this.elements.wrapper.style.display = 'flex'
-        this.elements.wrapper.style.justifyContent = 'center'
-        this.elements.wrapper.style.alignItems = 'center'
+        this.parent.canvas.style.position = 'absolute'
+
+        this.parent.wrapper.style.display = 'flex'
+        this.parent.wrapper.style.justifyContent = 'center'
+        this.parent.wrapper.style.alignItems = 'center'
 
         this.elements.circle.style = `
             display: none;
@@ -83,7 +83,7 @@ export default {
             -moz-transition: ${this.config.animationDuration}ms ease-in-out;
             transition: ${this.config.animationDuration}ms ease-in-out;
         `
-        this.elements.wrapper.appendChild(this.elements.circle)
+        this.parent.wrapper.appendChild(this.elements.circle)
     },
 
     initEvents() {
@@ -92,7 +92,7 @@ export default {
             else if (this.parent.vars.state === GIFPlayerV2.states.PAUSED) this.parent.play()
         }
 
-        this.parent.vars.canvas.addEventListener('click', evToggle)
+        this.parent.canvas.addEventListener('click', evToggle)
         this.elements.circle.addEventListener('click', evToggle)
 
     },
