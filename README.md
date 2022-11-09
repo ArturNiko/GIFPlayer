@@ -5,17 +5,17 @@
 
 GIF player, which allows you to control/draw every single frame separately.<br/><br/>
 
-<h2>0~ Installation</h2>
+<h2>§0 Installation</h2>
 
 `npm i js-gifplayer --save`<br><br>
 
 
-<h2>1~ Initialization</h2>
+<h2>§1 Initialization</h2>
 
 <h3>Import</h3>
 
 ``` js
-    import {GIFPlayerV2} from "../src/GIFPlayerV2.js"
+import {GIFPlayerV2} from "../src/GIFPlayerV2.js"
 ```
 
 <br>
@@ -24,23 +24,23 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 <h4>HTML</h4>
 
 ``` html
-    <div id="wrapper"></div>
+<div id="wrapper"></div>
 ```
 
 <h4>JS</h4>
 
 ``` js
-    const player = new GIFPlayer('source', '#wrappper', {
-        player: {
-            //player config
-        },
-        plugins: [/* Plug-in names */],
-        //plug-in name: { plug-in config }
-    })
+const player = new GIFPlayer('source', '#wrappper', {
+    player: {
+        //player config
+    },
+    plugins: [/* Plug-in names */],
+    //plug-in name: { plug-in config }
+})
 ```
 
 <br>
-<h2>2~ Parameters</h2>
+<h2>§2 Parameters</h2>
 
 <ul>
 <li>GIF link.</li>
@@ -82,7 +82,7 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 </ul>
 <br>
 
-<h2>3~ Functions</h2>
+<h2>§3 Functions</h2>
 
 <h3>Setters</h3>
 
@@ -109,18 +109,18 @@ GIF player, which allows you to control/draw every single frame separately.<br/>
 `stop()` pause the GIF and jump back to the first frame.<br/>
 `reverse()` Reverse playing direction.<br/><br/>
 
-<h2>4~ Global Vars</h2>
+<h2>§4 Global Vars</h2>
 
 ```javascript
 static states = Object.freeze({
-LOADING: 0,  //loading states
-READY: 1,
-PAUSED: 2,
-PLAYING: 3,
-ERROR: 4,
+    LOADING: 0,  //loading states
+    READY: 1,
+    PAUSED: 2,
+    PLAYING: 3,
+    ERROR: 4,
 
-FORWARD: 5, //play direction states
-BACKWARD: 6,
+    FORWARD: 5, //play direction states
+    BACKWARD: 6,
 })
 ```
 
@@ -132,7 +132,7 @@ static AllPlugins = Object.freeze({
 ```
 <br>
 
-<h2>5~ Plug Ins</h2>
+<h2>§5 Plug-Ins</h2>
 Currently exist 2 plug-ins:
 <ul>
 <li>
@@ -180,7 +180,7 @@ Options:
 </ul>
 <br>
 
-<h2>6~ Note</h2>
+<h2>§6 Note</h2>
 <p>
 Some GIFs may have artifacts when running backwards.<br>
 The most common reason is compression, which removes unchanged pixels from the next frame.
