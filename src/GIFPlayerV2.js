@@ -130,6 +130,7 @@ export class GIFPlayerV2{
         if(this.vars.frames[index]) this.vars.frames.splice(index, 1)
     }
 
+
     async add_gif(gif){
         const stateBuffer = this.vars.state
         const directionBuffer = this.vars.direction
@@ -144,6 +145,7 @@ export class GIFPlayerV2{
         this.vars.direction = directionBuffer
         if(stateBuffer === GIFPlayerV2.states.PLAYING) await this.play()
     }
+
 
 
     //SETTERS

@@ -1,7 +1,7 @@
 import {GIFPlayerV2} from "../GIFPlayerV2.js";
 
 export default {
-    lookForPlugins: function (){
+    lookForPlugins(){
         this.parent.vars.plugins.passed.forEach(plugIn => {
             if (Object.values(GIFPlayerV2.AllPlugins).includes(plugIn)) {
                 this.loadPlugInByName(plugIn)
@@ -9,7 +9,7 @@ export default {
         })
     },
 
-    loadPlugInByName: function (name) {
+    loadPlugInByName(name) {
 
         import(`./plugins/${name}.js`).then(plugin => {
             plugin = plugin.default
@@ -18,8 +18,4 @@ export default {
             throw new Error(err)
         })
     },
-
-
-
-
 }

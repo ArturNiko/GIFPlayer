@@ -2,7 +2,7 @@ import {GIFPlayerV2} from "../GIFPlayerV2.js";
 
 export default {
     //LOAD & PARSE
-    loadGif: function (url = undefined) {
+    loadGif(url = undefined) {
         const xhr = new XMLHttpRequest()
         xhr.open('GET', url ?? this.parent.vars.url)
         xhr.responseType = 'blob'
@@ -19,7 +19,7 @@ export default {
         }
         xhr.send()
     },
-    parseGif: async function (gif) {
+    async parseGif(gif) {
         let pos = 0
         let delayTimes = []
         let graphicControl = null
@@ -67,7 +67,7 @@ export default {
         }
     },
 
-    loadGifFrames: function (src){
+    loadGifFrames(src){
         return new Promise(resolve => {
             let frame = new Image()
             frame.src = src
@@ -78,7 +78,7 @@ export default {
         })
     },
 
-    awaitGIFLoad: function (){
+    awaitGIFLoad(){
         return new Promise(async (resolve) => {
             if (this.parent.vars.state === GIFPlayerV2.states.LOADING) {
                 const timeout   = 40000
