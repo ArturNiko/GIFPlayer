@@ -1,6 +1,5 @@
 .*.swp
 .DS_Store
-bundles
-media/test.gif
+examples/media/test.gif
 .idea
 

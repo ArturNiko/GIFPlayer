@@ -18,10 +18,10 @@
 <div id="scroller" style="width: 100vw; height: 100vh; position: fixed"></div>
 </body>
 <script type="module">
-    import {GIFPlayerV2} from "../src/GIFPlayerV2.js"
+    import {GIFPlayerV2} from "./src/GIFPlayerV2.js"
 
 
-    window.player = new GIFPlayerV2('../media/fight.gif', '#scroller', {
+    window.player = new GIFPlayerV2('./media/fight.gif', '#scroller', {
         plugins: [GIFPlayerV2.AllPlugins.Scroller],
         scroller: {
             flow: [0, 0.4, 0.8, 1, .6],

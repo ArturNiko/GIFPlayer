@@ -2,9 +2,9 @@ import {GIFPlayerV2} from "../GIFPlayerV2.js";
 
 export default {
     //LOAD & PARSE
-    loadGif: function () {
+    loadGif: function (url = undefined) {
         const xhr = new XMLHttpRequest()
-        xhr.open('GET', this.parent.vars.url)
+        xhr.open('GET', url ?? this.parent.vars.url)
         xhr.responseType = 'blob'
         xhr.onload = async (e) => {
             if(xhr.status === 404){
@@ -71,7 +71,7 @@ export default {
         return new Promise(resolve => {
             let frame = new Image()
             frame.src = src
-            frame.onload = ()=> {
+            frame.onload = () => {
                 this.parent.vars.frames.push(frame)
                 resolve()
             }

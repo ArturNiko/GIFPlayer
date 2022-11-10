@@ -106,14 +106,50 @@ export class GIFPlayerV2{
 
     //GIF Mutators
 
+    async shuffle_frames(){
+        await this.background.awaitGIFLoad()
+        //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+        for (let i = this.vars.frames.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1))
+            ;[this.vars.frames[i], this.vars.frames[j]] = [this.vars.frames[j], this.vars.frames[i]]
+        }
 
-    //SETTERS
-    set fps(fps){
-        if(fps instanceof Number && Math.ceil(fps) <= 0) return
-        this.vars.fps = Math.ceil(fps)
     }
 
+    async add_frame(source){
+        await this.background.awaitGIFLoad(source)
+        try{
+            await this.background.loadGifFrames(source)
+        }
+        catch (e){
+            console.error("Passed source doesn't provide any image.")
+        }
+    }
+
+    async remove_frame(index){
+        if(this.vars.frames[index]) this.vars.frames.splice(index, 1)
+    }
+
+    async add_gif(gif){
+        const stateBuffer = this.vars.state
+        const directionBuffer = this.vars.direction
+
+        await this.pause()
+        this.vars.direction = GIFPlayerV2.states.FORWARD
+        this.vars.state = GIFPlayerV2.states.LOADING
+
+        await this.background.loadGif(gif)
+        await this.background.awaitGIFLoad()
+
+        this.vars.direction = directionBuffer
+        if(stateBuffer === GIFPlayerV2.states.PLAYING) await this.play()
+    }
+
+
+    //SETTERS
+
     set direction(direction){
+        //also frames mutator
         const frame = this.vars.frames[this.vars.currIndex]
 
         if(direction === GIFPlayerV2.states.BACKWARD){
@@ -127,8 +163,11 @@ export class GIFPlayerV2{
 
         }
         this.frame = this.vars.frames.indexOf(frame)
+    }
 
-
+    set fps(fps){
+        if(fps instanceof Number && Math.ceil(fps) <= 0) return
+        this.vars.fps = Math.ceil(fps)
     }
 
     set frame(index){
