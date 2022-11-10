@@ -11,7 +11,7 @@
 import GIFLoader from "./exports/Loader.js"
 import GIFPlayer from "./exports/Player.js"
 import PluginsController from "./exports/PluginsController.js"
-//import Defaults from "./Defaults.js"
+import Defaults from "./exports/Defaults.js"
 
 export class GIFPlayerV2{
 
@@ -50,7 +50,7 @@ export class GIFPlayerV2{
         }
     }
 
-    //static defaults = Defaults
+    static defaults = Defaults
 
     //Background methods
     background = {}

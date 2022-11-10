@@ -32,6 +32,8 @@ export default {
 
     construct(url, canvasSelector, config, parent){
         config.player = config.player ?? {}
+        config.plugins = config.plugins ?? GIFPlayerV2.AllPlugins.GUI
+
         this.validate(canvasSelector, config)
 
         this.parent = parent
