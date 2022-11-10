@@ -102,13 +102,11 @@ export default class Scroller{
     calculateStep(a, b, forward) {
         const flowStepSize = this.config.flow[b] - this.config.flow[a]
         const inSectionStep = (this.config.scrollTop - this.config.scrollZonesDelimiters[a]) / this.config.scrollZonesHeight * flowStepSize
-        console.log(this.config.scrollZonesDelimiters)
         this.progress = (this.config.flow[a] + inSectionStep) * 100
         this.set_progress()
     }
 
     set_progress() {
-        //console.log(this.parent.vars.frames.length / 100 * this.progress)
         this.parent.frame = Math.round(this.parent.vars.frames.length / 100 * this.progress)
     }
 
