@@ -1,6 +1,6 @@
 /**
  * @name GUI
- * @version 0.6.0
+ * @version 0.7.0
  * @author Artur Papikian
  * @description little interactive gui
  * @licence MIT
@@ -15,6 +15,7 @@ export default class GUI {
 
     elements = {}
     state = ''
+    animationTimeout
 
     constructor(parent) {
         this.parent = parent
@@ -88,7 +89,6 @@ export default class GUI {
 
     initEvents() {
         const evToggle = () => {
-            console.log(this.parent)
             if (this.parent.vars.state === GIFPlayerV2.states.PLAYING) this.parent.pause()
             else if (this.parent.vars.state === GIFPlayerV2.states.PAUSED) this.parent.play()
         }
@@ -100,26 +100,23 @@ export default class GUI {
 
     checkState() {
         if (this.state !== this.parent.vars.state) {
+            clearTimeout(this.animationTimeout)
             this.state = this.parent.vars.state
+
             switch (this.parent.vars.state) {
                 case GIFPlayerV2.states.PLAYING:
-                    this.elements.circle.style.transform = 'scale(.8)'
-                    this.elements.circle.style.opacity = '0'
-                    setTimeout(() => this.playing(), this.config.animationDuration)
-
+                    this.playing()
                     break
+
                 case GIFPlayerV2.states.PAUSED:
+                case GIFPlayerV2.states.READY:
                     this.paused()
-                    setTimeout(() => {
-                        this.elements.circle.style.transform = 'scale(1)'
-                        this.elements.circle.style.opacity = '1'
-                    }, 0)
-
-
                     break
+
                 case GIFPlayerV2.states.LOADING:
                     this.loading()
                     break
+
                 case GIFPlayerV2.states.ERROR:
                     this.error()
                     break
@@ -128,11 +125,21 @@ export default class GUI {
         if(this.state !== GIFPlayerV2.states.ERROR) window.requestAnimationFrame(() => this.checkState())
     }
     playing() {
-        this.elements.circle.style.display = 'none'
+        this.elements.circle.style.transform = 'scale(.8)'
+        this.elements.circle.style.opacity = '0'
+
+        this.animationTimeout = setTimeout(() => {
+            this.elements.circle.style.display = 'none'
+        }, this.config.animationDuration)
     }
     paused () {
         this.elements.circle.style.display = 'flex'
         this.elements.circle.innerHTML = 'PLAY'
+
+        this.animationTimeout = setTimeout(() => {
+            this.elements.circle.style.transform = 'scale(1)'
+            this.elements.circle.style.opacity = '1'
+        }, 0)
     }
     loading () {
         this.elements.circle.style.display = 'flex'
@@ -224,9 +231,9 @@ const d = {
 
     initEvents: function() {
         const evToggle = () => {
-            console.log(this.parent)
             if (this.parent.vars.state === GIFPlayerV2.states.PLAYING) this.parent.pause()
-            else if (this.parent.vars.state === GIFPlayerV2.states.PAUSED) this.parent.play()
+            else if (this.parent.vars.state === GIFPlayerV2.states.PAUSED
+                || this.parent.vars.state === GIFPlayerV2.states.READY) this.parent.play()
         }
 
         this.parent.canvas.addEventListener('click', () => evToggle())
@@ -242,20 +249,21 @@ const d = {
                     this.elements.circle.style.transform = 'scale(.8)'
                     this.elements.circle.style.opacity = '0'
                     setTimeout(() => this.playing(), this.config.animationDuration)
-
                     break
+
                 case GIFPlayerV2.states.PAUSED:
+                case GIFPlayerV2.states.READY:
                     this.paused()
                     setTimeout(() => {
                         this.elements.circle.style.transform = 'scale(1)'
                         this.elements.circle.style.opacity = '1'
                     }, 0)
-
-
                     break
+
                 case GIFPlayerV2.states.LOADING:
                     this.loading()
                     break
+
                 case GIFPlayerV2.states.ERROR:
                     this.error()
                     break
