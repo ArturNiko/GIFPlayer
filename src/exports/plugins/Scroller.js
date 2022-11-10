@@ -1,32 +1,35 @@
 /**
  * @name Scroller
- * @version 1.0.1
+ * @version 1.1.1
  * @author Artur Papikian
  * @description synchron play-on-scroll animation
  * @licence MIT
  *
  */
 
-export default {
-    name: 'scroller',
-    parent: {},
-    config: {},
+export default class Scroller{
+    name = 'scroller'
+    parent = {}
+    config = {}
 
-    progress: 0,
+    progress = 0
 
-    init: function (parent) {
+    constructor(parent) {
         this.parent = parent
         this.config = this.parent.vars.plugins.config[this.name] ?? {}
         this.check()
+        this.init()
+    }
 
-        ///The part below is individual
+    init(parent) {
         this.parent.pause()
         this.overwrite()
         this.precalculate()
-        this.config.target.addEventListener('scroll', () => this.calculate(), {passive: true})
-    },
 
-    check: function () {
+        this.config.target.addEventListener('scroll', () => this.calculate(), {passive: true})
+    }
+
+    check() {
         if (typeof this.config.flow != "undefined" && Array.isArray(this.config.flow) !== true) {
             console.warn("Flow values must be passed in an array.")
             this.config.flow = [0, 1]
@@ -36,9 +39,13 @@ export default {
             this.config.flow = [0, 1]
         }
         else if (typeof this.config.flow == "undefined") this.config.flow = [0, 1]
-    },
 
-    overwrite: function () {
+        if(this.parent.background.helpers.isHTMLElement(this.config.target) !== true && this.config.target !== window) {
+            this.config.target = window
+        }
+    }
+
+    overwrite() {
         this.parent.reverse = this.reverse
 
         //emptying
@@ -50,23 +57,22 @@ export default {
             = function () { console.warn('This function was overwritten by the plug-in') }
 
         this.parent.vars.flow = this.config.flow
-    },
+    }
 
-    reverse: function () {
+    reverse() {
         this.vars.plugins.loaded.scroller.config.flow.reverse()
         this.vars.plugins.loaded.scroller.calculate()
-    },
+    }
 
-    precalculate: function () {
+    precalculate() {
         this.calculate()
-
-        this.config.scrollZonesHeight = this.config.scrollHeight / this.config.flow.length
+        this.config.scrollZonesHeight = this.config.scrollHeight / (this.config.flow.length - 1)
 
         this.config.scrollZonesDelimiters = []
         this.config.flow.forEach((_, i) => this.config.scrollZonesDelimiters.push(this.config.scrollZonesHeight * i))
-    },
+    }
 
-    calculate: function (call = '') {
+    calculate() {
         if (this.config.target === window) {
             this.config.scrollHeight = document.body.scrollHeight - window.innerHeight
             this.config.scrollTop = this.config.target.scrollY
@@ -77,9 +83,9 @@ export default {
         }
 
         setTimeout(() => this.findScrollZone())
-    },
+    }
 
-    findScrollZone: function () {
+    findScrollZone() {
         this.config.scrollZonesDelimiters.reduce((pointA, pointB) => {
             if (pointA <= this.config.scrollTop && this.config.scrollTop < pointB) {
                 this.calculateStep(
@@ -91,16 +97,19 @@ export default {
 
             return pointB
         })
-    },
+    }
 
-    calculateStep: function (a, b, forward) {
+    calculateStep(a, b, forward) {
         const flowStepSize = this.config.flow[b] - this.config.flow[a]
         const inSectionStep = (this.config.scrollTop - this.config.scrollZonesDelimiters[a]) / this.config.scrollZonesHeight * flowStepSize
+        console.log(this.config.scrollZonesDelimiters)
         this.progress = (this.config.flow[a] + inSectionStep) * 100
         this.set_progress()
-    },
+    }
 
-    set_progress: function () {
+    set_progress() {
+        //console.log(this.parent.vars.frames.length / 100 * this.progress)
         this.parent.frame = Math.round(this.parent.vars.frames.length / 100 * this.progress)
     }
+
 }

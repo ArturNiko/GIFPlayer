@@ -10,10 +10,10 @@ export default {
     },
 
     loadPlugInByName: function (name) {
+
         import(`./plugins/${name}.js`).then(plugin => {
             plugin = plugin.default
-            plugin.init(this.parent)
-            this.parent.vars.plugins.loaded[name] = plugin
+            this.parent.vars.plugins.loaded[name] = new plugin(this.parent)
         }).catch(err => {
             throw new Error(err)
         })
