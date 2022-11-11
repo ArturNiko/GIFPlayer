@@ -1,6 +1,6 @@
 /**
  * @name GIFPlayerV2
- * @version 2.1
+ * @version 2.4.0_beta
  * @author Artur Papikian
  * @description small GIF controller
  * @licence MIT
@@ -11,6 +11,7 @@
 import GIFLoader from "./exports/Loader.js"
 import GIFPlayer from "./exports/Player.js"
 import PluginsController from "./exports/PluginsController.js"
+import Validator from "./exports/Validator.js"
 import Defaults from "./exports/Defaults.js"
 
 export class GIFPlayerV2{
@@ -24,6 +25,9 @@ export class GIFPlayerV2{
 
         FORWARD: 'forward',
         BACKWARD: 'backward',
+
+        //loop
+        //once
     })
 
     static AllPlugins = Object.freeze({
@@ -35,7 +39,8 @@ export class GIFPlayerV2{
         canvas: {},
         wrapper: {},
         ctx: {},
-        url: '',
+        urls: [],
+        queue: [],
         frames: [],
         currIndex: 0,
         fps: 60,
@@ -56,15 +61,16 @@ export class GIFPlayerV2{
     background = {}
 
     constructor(url, canvasSelector, config) {
-        Object.assign(this.background, GIFPlayer, GIFLoader, PluginsController)
+        Object.assign(this.background, GIFPlayer, GIFLoader, PluginsController, Validator)
         this.background.construct(url, canvasSelector, config, this)
     }
 
     //CONTROLLERS
-    async play(){
-        new Promise(async resolve => {
+    play(){
+        return new Promise(async resolve => {
             await this.background.awaitGIFLoad()
             if (!(this.vars.state === GIFPlayerV2.states.ERROR || this.vars.state === GIFPlayerV2.states.PLAYING)){
+
                 await this.pause()
                 this.vars.state = GIFPlayerV2.states.PLAYING
                 this.background.animate()
@@ -73,8 +79,8 @@ export class GIFPlayerV2{
         })
     }
 
-    async pause() {
-        new Promise(async resolve => {
+    pause() {
+        return new Promise(async resolve => {
             await this.background.awaitGIFLoad()
             if(!(this.vars.state === GIFPlayerV2.states.ERROR)) {
                 this.vars.state = GIFPlayerV2.states.PAUSED
@@ -104,8 +110,7 @@ export class GIFPlayerV2{
         else this.direction = GIFPlayerV2.states.FORWARD
     }
 
-    //GIF Mutators
-
+    //GIF MUTATORS
     async shuffle_frames(){
         await this.background.awaitGIFLoad()
         //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
@@ -116,13 +121,12 @@ export class GIFPlayerV2{
 
     }
 
-    async add_frame(source){
-        await this.background.awaitGIFLoad(source)
-        try{
+    async add_frame(...sources){
+        await this.background.awaitGIFLoad()
+        this.background.validateURLS(sources)
+
+        for(const source of sources){
             await this.background.loadGifFrames(source)
-        }
-        catch (e){
-            console.error("Passed source doesn't provide any image.")
         }
     }
 
@@ -131,15 +135,30 @@ export class GIFPlayerV2{
     }
 
 
-    async add_gif(gif){
+    async remove_gif(gif){
+        /**
+         *
+         */
+    }
+
+    async add_gif(...gifs){
+        await this.background.awaitGIFLoad()
+        this.background.validateURLS(gifs)
+
         const stateBuffer = this.vars.state
         const directionBuffer = this.vars.direction
 
+
         await this.pause()
+
+
         this.vars.direction = GIFPlayerV2.states.FORWARD
         this.vars.state = GIFPlayerV2.states.LOADING
 
-        await this.background.loadGif(gif)
+        this.vars.queue.push(...gifs)
+        for(const link of gifs) {
+            await this.background.loadGif(link)
+        }
         await this.background.awaitGIFLoad()
 
         this.vars.direction = directionBuffer
@@ -147,9 +166,7 @@ export class GIFPlayerV2{
     }
 
 
-
     //SETTERS
-
     set direction(direction){
         //also frames mutator
         const frame = this.vars.frames[this.vars.currIndex]
@@ -168,7 +185,7 @@ export class GIFPlayerV2{
     }
 
     set fps(fps){
-        if(fps instanceof Number && Math.ceil(fps) <= 0) return
+        this.background.validateFPS(fps)
         this.vars.fps = Math.ceil(fps)
     }
 
@@ -192,6 +209,7 @@ export class GIFPlayerV2{
     get state()                     { return this.vars.state }
     get frames_length()             { return this.vars.frames.length }
     get current_frame_index()       { return this.vars.currIndex }
+    //get gifs()                      { return this.vars.url}
     get_frame(index)                { return (index >= 0 && index < this.vars.frames.length) ? this.vars.frames[index] : this.vars.frames[this.vars.currIndex] }
 
 }

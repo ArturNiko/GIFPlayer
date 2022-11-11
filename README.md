@@ -30,7 +30,8 @@ import {GIFPlayerV2} from "../src/GIFPlayerV2.js"
 <h4>JS</h4>
 
 ``` js
-const player = new GIFPlayer('source', '#wrappper', {
+const sources = 'gif1.gif' || ['gif1.gif', 'gif2.gif'] 
+const player = new GIFPlayer(sources, '#wrappper', {
     player: {
         //player config
     },
@@ -43,8 +44,8 @@ const player = new GIFPlayer('source', '#wrappper', {
 <h2>§2 Parameters</h2>
 
 <ul>
-<li>GIF link.</li>
-<li>Canvas selector.</li>
+<li>GIF links (multiple GIFS can be passed).</li>
+<li>Wrapper selector.</li>
 <li>Options:<br>
 
 <ul>
@@ -88,7 +89,7 @@ const player = new GIFPlayer('source', '#wrappper', {
 
 `.direction`  set play direction.<br/>
 `.frame` set current frame.<br/>
-`.fps` set fps limiter.<br> 
+`.fps` set fps limiter.<br>
 
 <h3>Getters</h3>
 
@@ -98,7 +99,7 @@ const player = new GIFPlayer('source', '#wrappper', {
 `.state` player state.  
 `.frames_length` frames count.  
 `.current_frame_index` current frame index.  
-`get_frame(index)` also a getter, but it's function because you have to pass frame index you want to get.
+`get_frame(index)` also a getter, but it's function because you have to pass frame index you want to get.<br>
 
 <h3>Controls</h3>
 
@@ -107,7 +108,14 @@ const player = new GIFPlayer('source', '#wrappper', {
 `play_backward()` set direction to `GIFPlayer.states.BACKWARD` and play.<br/>
 `pause()` pause the GIF.<br/>
 `stop()` pause the GIF and jump back to the first frame.<br/>
-`reverse()` Reverse playing direction.<br/><br/>
+`reverse()` reverse playing direction.
+
+<h3>GIF Mutators ⭐️*NEW/BETA*⭐️</h3>
+
+`shuffle_frames()` randomly shuffles all frames.<br>
+`remove_frame(index)` remove 1 frame. <br>
+`remove_gif(gif)` <strong>NOT SUPPORTED YET.</strong><br>
+`add_gif(...gif)` load new gifs.<br/><br/>
 
 <h2>§4 Global Vars</h2>
 

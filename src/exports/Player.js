@@ -16,51 +16,35 @@ export default {
         }
     },
 
-    validate(canvasSelector, config) {
-        if (this.helpers.isHTMLElement(document.querySelector(canvasSelector)) !== true) throw new Error('Invalid HTML element.')
-
-        if (typeof config.player.fps != 'undefined' && !(typeof config.player.fps == 'number' && Math.ceil(config.player.fps) >= 0))
-            throw new Error('Passed FPS limiter must be a positiv number.')
-
-        if(typeof config.plugins != 'undefined' && Array.isArray(config.plugins) !== true) {
-                console.warn('Plug-ins should be passed in an array.')
-                config.plugins = [config.plugins]
-        }
-
-        return config
-    },
-
-    construct(url, canvasSelector, config, parent){
+    construct(urls, wrapperSelector, config, parent){
         config.player = config.player ?? {}
-        config = this.validate(canvasSelector, config)
+        config = this.validate(wrapperSelector, config, urls)
 
         this.parent = parent
-        this.parent.vars.wrapper = document.querySelector(canvasSelector)
-        this.parent.vars.url = url
+        this.parent.vars.wrapper = document.querySelector(wrapperSelector)
+
+        if(Array.isArray(urls) !== true) urls = [urls]
+        urls.forEach(url => {
+            this.parent.vars.urls.push({
+                link: url,
+                frames: [],
+            })
+            this.parent.vars.queue.push(url)
+        })
 
         this.parent.vars.autoplay = config.player.autoplay === true
         this.parent.vars.currIndex = this.helpers.isWholeNumber(config.player.frame) ? config.player.frame : this.parent.vars.currIndex
         this.parent.vars.fps = config.player.fps ?? Math.ceil(this.parent.vars.fps)
 
         this.build()
-        this.init(config).then(_ => {
-            GIFPlayerV2.defaults.then(defaults => {
-                this.parent.vars.plugins.passed = config.plugins ?? defaults.plugins
-                Object.entries(config).forEach(entry => {
-                    const [key, value] = entry
-                    if(key !== 'player' && key !== 'plugins') {
-                        this.parent.vars.plugins.config[key] = value
-                        delete config[key]
-                    }
-                })
-                this.lookForPlugins()
-            })
-        })
+
+        this.init(config).then()
     },
 
     //INIT
     async init(config){
-        this.loadGif()
+        for (const url of this.parent.vars.urls) await this.loadGif(url.link)
+
         await this.awaitGIFLoad()
 
         if(this.parent.vars.state === GIFPlayerV2.states.READY){
@@ -74,6 +58,18 @@ export default {
             }
             else this.draw()
         }
+
+        GIFPlayerV2.defaults.then(defaults => {
+            this.parent.vars.plugins.passed = config.plugins ?? defaults.plugins
+            Object.entries(config).forEach(entry => {
+                const [key, value] = entry
+                if(key !== 'player' && key !== 'plugins') {
+                    this.parent.vars.plugins.config[key] = value
+                    delete config[key]
+                }
+            })
+            this.lookForPlugins()
+        })
     },
 
     build(){
