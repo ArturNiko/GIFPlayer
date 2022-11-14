@@ -119,8 +119,8 @@ const player = new GIFPlayer(sources, '#wrappper', {
 
 `shuffle_frames()` randomly shuffles frames.<br>
 `remove_frames(...index)` remove frames. <br>
-`add_frames(...imgs)` push new frame.<br/>
-`remove_gifs(...gifs)` remove GIFs<br>
+`add_frames(...imgs)` push new frames.<br/>
+`remove_gifs(...gifs)` remove GIFs frames.<br>
 `add_gifs(...gifs)` push new GIFs frames.<br/><br/>
 
 <h2>§4 Global Vars</h2>
