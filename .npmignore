@@ -2,6 +2,6 @@
 .DS_Store
 media
 examples/media
-exports/CallsQueuer.js
+src/exports/CallsQueuer.js
 .idea
 

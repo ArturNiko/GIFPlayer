@@ -36,7 +36,7 @@ const player = new GIFPlayer(sources, '#wrappper', {
         //player config
     },
     plugins: [/* Plug-in names */],
-    //plug-in name: { plug-in config }
+    //plug-in name in lowercase: { plug-in config }
 })
 ```
 
@@ -102,7 +102,7 @@ const player = new GIFPlayer(sources, '#wrappper', {
 `.current_frame` current frame.
 `.direction` playing direction.
 `.fps` fps limiter-
-`get_frame(index)` also a getter, but it's function because you have to pass frame index.<br>
+`get_frame(index)` also a getter, but it's function because you have to pass an index.<br>
 
 <h3>Controls</h3>
 
