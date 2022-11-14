@@ -1,6 +1,6 @@
 /**
  * @name GIFPlayerV2
- * @version 2.4.0_beta
+ * @version 2.4.0
  * @author Artur Papikian
  * @description small GIF controller
  * @licence MIT
@@ -39,9 +39,14 @@ export class GIFPlayerV2{
         canvas: {},
         wrapper: {},
         ctx: {},
-        urls: [],
-        queue: [],
+        gifs: [],
         frames: [],
+
+        queue: {
+            list: [],
+            resolved: [],
+        },
+
         currIndex: 0,
         fps: 60,
         state: 'loading',
@@ -110,6 +115,14 @@ export class GIFPlayerV2{
         else this.direction = GIFPlayerV2.states.FORWARD
     }
 
+    async step(){
+        this.frame = this.vars.frames[this.current_frame_index + 1] ? this.current_frame_index + 1 : 0
+    }
+
+    async step_back(){
+        this.frame = this.vars.frames[this.current_frame_index - 1] ? this.current_frame_index - 1 : this.vars.frames.length - 1
+    }
+
     //GIF MUTATORS
     async shuffle_frames(){
         await this.background.awaitGIFLoad()
@@ -121,48 +134,52 @@ export class GIFPlayerV2{
 
     }
 
-    async add_frame(...sources){
+    async add_frames(...sources){
         await this.background.awaitGIFLoad()
         this.background.validateURLS(sources)
-
-        for(const source of sources){
-            await this.background.loadGifFrames(source)
-        }
+        await this.background.loadGifFrames(sources)
     }
 
-    async remove_frame(index){
-        if(this.vars.frames[index]) this.vars.frames.splice(index, 1)
+    async remove_frames(...indexes){
+        const stateBuffer = this.vars.state
+
+        let bufferedFrameIndex = this.current_frame_index
+        const toRemove = []
+        indexes.forEach(index => {
+            if(this.get_frame(index)) toRemove.push(this.get_frame(index))
+        })
+
+        toRemove.forEach(frame => {
+            this.vars.gifs.forEach(url => {
+                const i = this.vars.gifs.indexOf(url)
+                if(url.frames.includes(frame)){
+                    this.vars.gifs[i].frames.splice(this.vars.gifs[i].frames.indexOf(frame), 1)
+                }
+                if(this.vars.gifs[i].frames.length === 0) this.vars.gifs.splice(i , 1)
+            })
+
+            this.vars.frames.splice(this.vars.frames.indexOf(frame), 1)
+            this.frame = 0
+        })
     }
 
 
-    async remove_gif(gif){
-        /**
-         *
-         */
+    async remove_gifs(...gifs){
+        const frames = []
+        gifs.forEach(gif => {
+            this.vars.gifs.forEach(url => {
+                if(url.src === gif) url.frames.forEach(frame => frames.push(this.vars.frames.indexOf(frame)))
+            })
+        })
+
+        await this.remove_frames(...frames)
     }
 
-    async add_gif(...gifs){
+    async add_gifs(...gifs){
         await this.background.awaitGIFLoad()
         this.background.validateURLS(gifs)
 
-        const stateBuffer = this.vars.state
-        const directionBuffer = this.vars.direction
-
-
-        await this.pause()
-
-
-        this.vars.direction = GIFPlayerV2.states.FORWARD
-        this.vars.state = GIFPlayerV2.states.LOADING
-
-        this.vars.queue.push(...gifs)
-        for(const link of gifs) {
-            await this.background.loadGif(link)
-        }
-        await this.background.awaitGIFLoad()
-
-        this.vars.direction = directionBuffer
-        if(stateBuffer === GIFPlayerV2.states.PLAYING) await this.play()
+        await this.background.loadGif(gifs)
     }
 
 
@@ -172,12 +189,12 @@ export class GIFPlayerV2{
         const frame = this.vars.frames[this.vars.currIndex]
 
         if(direction === GIFPlayerV2.states.BACKWARD){
-            if(this.vars.direction === GIFPlayerV2.states.FORWARD) this.vars.frames.reverse()
+            if(this.direction === GIFPlayerV2.states.FORWARD) this.vars.frames.reverse()
             this.vars.direction = direction
         }
 
         else if(direction === GIFPlayerV2.states.FORWARD){
-            if(this.vars.direction === GIFPlayerV2.states.BACKWARD) this.vars.frames.reverse()
+            if(this.direction === GIFPlayerV2.states.BACKWARD) this.vars.frames.reverse()
             this.vars.direction = direction
 
         }
@@ -209,7 +226,10 @@ export class GIFPlayerV2{
     get state()                     { return this.vars.state }
     get frames_length()             { return this.vars.frames.length }
     get current_frame_index()       { return this.vars.currIndex }
-    //get gifs()                      { return this.vars.url}
+    get current_frame()             { return this.vars.frames[this.current_frame_index]}
+    get direction()                 { return this.vars.direction }
+    get fps()                       { return this.vars.fps }
+    //get gifs()                      { return this.vars.gifs}
     get_frame(index)                { return (index >= 0 && index < this.vars.frames.length) ? this.vars.frames[index] : this.vars.frames[this.vars.currIndex] }
 
 }

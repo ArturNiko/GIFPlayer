@@ -98,8 +98,11 @@ const player = new GIFPlayer(sources, '#wrappper', {
 `.wrapper` wrapper element.  
 `.state` player state.  
 `.frames_length` frames count.  
-`.current_frame_index` current frame index.  
-`get_frame(index)` also a getter, but it's function because you have to pass frame index you want to get.<br>
+`.current_frame_index` current frame index.
+`.current_frame` current frame.
+`.direction` playing direction.
+`.fps` fps limiter-
+`get_frame(index)` also a getter, but it's function because you have to pass frame index.<br>
 
 <h3>Controls</h3>
 
@@ -108,14 +111,17 @@ const player = new GIFPlayer(sources, '#wrappper', {
 `play_backward()` set direction to `GIFPlayer.states.BACKWARD` and play.<br/>
 `pause()` pause the GIF.<br/>
 `stop()` pause the GIF and jump back to the first frame.<br/>
-`reverse()` reverse playing direction.
+`reverse()` reverse playing direction.<br>
+`step()` jumps 1 frame forward. (Depends on direction)<br>
+`step_back()` jumps 1 frame backward. (Depends on direction)
 
-<h3>GIF Mutators ⭐️*NEW/BETA*⭐️</h3>
+<h3>GIF Mutators ⭐️<i>From 2.4.0^</i>⭐️</h3>
 
-`shuffle_frames()` randomly shuffles all frames.<br>
-`remove_frame(index)` remove 1 frame. <br>
-`remove_gif(gif)` <strong>NOT SUPPORTED YET.</strong><br>
-`add_gif(...gif)` load new gifs.<br/><br/>
+`shuffle_frames()` randomly shuffles frames.<br>
+`remove_frames(...index)` remove frames. <br>
+`add_frames(...imgs)` push new frame.<br/>
+`remove_gifs(...gifs)` remove GIFs<br>
+`add_gifs(...gifs)` push new GIFs frames.<br/><br/>
 
 <h2>§4 Global Vars</h2>
 

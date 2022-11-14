@@ -2,35 +2,52 @@ import {GIFPlayerV2} from "../GIFPlayerV2.js";
 
 export default {
     //LOAD & PARSE
-     loadGif(url) {
-        return new Promise(resolve => {
-            const xhr = new XMLHttpRequest()
-            xhr.open('GET', url)
-            xhr.responseType = 'blob'
-            xhr.onload = async (e) => {
-                if(xhr.status === 404){
-                    this.parent.vars.state = GIFPlayerV2.states.ERROR
-                    throw new Error("File not found.")
-                }
-                for (let i = 0; this.parent.vars.queue.length > i; i++){
-                    if(this.parent.vars.queue[i] === url) {
-                        this.parent.vars.queue.splice(i , 1)
-                        await this.parseGif(new Uint8Array(await e.target.response.arrayBuffer()), url)
-                    }
-                }
-                this.parent.vars.queue = this.parent.vars.queue.splice(this.parent.vars.queue.indexOf(url), 1)
-                resolve()
-            }
-            xhr.onerror = () => {
-                this.parent.vars.state = GIFPlayerV2.states.ERROR
-                throw new Error("File not found.")
-            }
-            xhr.send()
-        })
+     async loadGif(gifs = []) {
 
+         this.addToQueueStack(gifs)
 
+         for(const source of this.parent.vars.queue.list){
+             await new Promise(async resolve => {
+
+                 const xhr = new XMLHttpRequest()
+                 xhr.open('GET', source)
+                 xhr.responseType = 'blob'
+                 xhr.onload = async (e) => {
+                     if(xhr.status === 404){
+                         this.parent.vars.state = GIFPlayerV2.states.ERROR
+                         throw new Error("File not found.")
+                     }
+
+                     this.parent.vars.gifs.push({
+                         src: source,
+                         frames: [],
+                     })
+
+                     this.parseGif(new Uint8Array(await e.target.response.arrayBuffer()), source).then(_ => resolve())
+                     this.addToResolvedQueueStack(source)
+                 }
+                 xhr.onerror = () => {
+                     this.parent.vars.state = GIFPlayerV2.states.ERROR
+                     throw new Error("File not found.")
+                 }
+                 xhr.send()
+             })
+         }
     },
-    parseGif(gif) {
+
+    addToQueueStack(urls){
+        if(Array.isArray(urls) !== true) urls = [urls]
+        urls.forEach(url => this.parent.vars.queue.list.push(url))
+    },
+    addToResolvedQueueStack(url){
+        this.parent.vars.queue.resolved.push(url)
+    },
+    flashQueueStack(){
+        this.parent.vars.queue.list = []
+        this.parent.vars.queue.resolved = []
+    },
+
+    parseGif(gif, src) {
         return new Promise(async resolve => {
             let pos = 0
             let delayTimes = []
@@ -61,7 +78,7 @@ export default {
                         while (gif[++pos]) pos += gif[pos]
                         imageData = gif.subarray(offset, pos + 1)
                         frames.push(URL.createObjectURL(new Blob([gifHeader, graphicControl, imageData], {type: 'image/jpeg'})))
-                        await this.loadGifFrames(frames.at( - 1))
+                        await this.loadGifFrames(frames.at( - 1), src)
                     } else {
                         this.parent.vars.state = GIFPlayerV2.states.ERROR
                         throw new Error("Couldn't parse the GIF.")
@@ -69,7 +86,10 @@ export default {
                     pos++
                     if(!(gif[pos] && gif[pos] !== 0x3b)) {
                         //check if queue empty
-                        if(this.parent.vars.queue.length === 0) this.parent.vars.state = GIFPlayerV2.states.READY
+                        if(this.parent.vars.queue.list.length === this.parent.vars.queue.resolved.length){
+                            this.flashQueueStack()
+                            if(this.parent.vars.state === GIFPlayerV2.states.LOADING) this.parent.vars.state = GIFPlayerV2.states.READY
+                        }
                         resolve()
                     }
                 }
@@ -81,12 +101,15 @@ export default {
         })
     },
 
-    loadGifFrames(src){
+    loadGifFrames(src, gifSrc){
         return  new Promise(resolve => {
             let frame = new Image()
             frame.src = src
             frame.onload = () => {
                 this.parent.vars.frames.push(frame)
+                this.parent.vars.gifs.forEach((gif, i) => {
+                    if(gif.src === gifSrc) this.parent.vars.gifs[i].frames.push(frame)
+                })
                 resolve()
             }
         })
@@ -106,6 +129,7 @@ export default {
                         clearInterval(awaitForReady)
                         throw new Error("Load time limit exceeded.")
                     }
+                    //Error is not handled because currently I am just throwing errors.
                 }, 20)
             }
             else resolve()

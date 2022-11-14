@@ -1,6 +1,6 @@
 /**
  * @name Scroller
- * @version 1.1.1
+ * @version 1.1.2
  * @author Artur Papikian
  * @description synchron play-on-scroll animation
  * @licence MIT
@@ -52,8 +52,11 @@ export default class Scroller{
         this.parent.play
             = this.parent.play_backward
             = this.parent.play_forward
+            = this.parent.step_backward
+            = this.parent.step_forward
             = this.parent.pause
             = this.parent.stop
+            = this.parent.step
             = function () { console.warn('This function was overwritten by the plug-in') }
 
         this.parent.vars.flow = this.config.flow
