@@ -113,12 +113,12 @@ const player = new GIFPlayer(sources, '#wrappper', {
 `stop()` pause the GIF and jump back to the first frame.<br/>
 `reverse()` reverse playing direction.<br>
 `step()` jumps 1 frame forward. (Depends on direction)<br>
-`step_back()` jumps 1 frame backward. (Depends on direction)
+`step_back()` jumps back 1 frame. (Depends on direction)<br>
 
 <h3>GIF Mutators ⭐️<i>From 2.4.0^</i>⭐️</h3>
 
 `shuffle_frames()` randomly shuffles frames.<br>
-`remove_frames(...index)` remove frames. <br>
+`remove_frames(...indices)` remove frames. <br>
 `add_frames(...imgs)` push new frames.<br/>
 `remove_gifs(...gifs)` remove GIFs frames.<br>
 `add_gifs(...gifs)` push new GIFs frames.<br/><br/>
