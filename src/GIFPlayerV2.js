@@ -14,8 +14,7 @@ import PluginsController from "./exports/PluginsController.js"
 import Validator from "./exports/Validator.js"
 import Defaults from "./exports/Defaults.js"
 
-export class GIFPlayerV2{
-
+export default class GIFPlayerV2{
     static states = Object.freeze({
         LOADING: 'loading',
         READY: 'ready',
@@ -233,5 +232,3 @@ export class GIFPlayerV2{
     get_frame(index)                { return (index >= 0 && index < this.vars.frames.length) ? this.vars.frames[index] : this.vars.frames[this.vars.currIndex] }
 
 }
-
-if(typeof module != "undefined") module.exports.GIFPlayerV2 = GIFPlayerV2
