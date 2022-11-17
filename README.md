@@ -3,32 +3,27 @@
       <span style="color: black;">P</span>layer 
 </h1>
 
-GIF player, which allows you to control/draw every single frame separately.<br/><br/>
+GIF player, which allows you to control/draw every single frame separately.<br><br>
 
-<h2>§0 Installation</h2>
+## §0 Installation
 
 `npm i js-gifplayer --save`<br><br>
 
 
-<h2>§1 Initialization</h2>
-
-<h3>Import</h3>
-
+## §1 Initialization
+### Import
 ``` js
-import {GIFPlayerV2} from "../src/GIFPlayerV2.js"
+import {GIFPlayerV2} from "js-gifplayer"
 ```
-
 <br>
-<h3>Usage</h3>
 
-<h4>HTML</h4>
-
+### Usage
+#### HTML
 ``` html
 <div id="wrapper"></div>
 ```
 
-<h4>JS</h4>
-
+#### JS
 ``` js
 const sources = 'gif1.gif' || ['gif1.gif', 'gif2.gif'] 
 const player = new GIFPlayer(sources, '#wrappper', {
@@ -39,92 +34,57 @@ const player = new GIFPlayer(sources, '#wrappper', {
     //plug-in name in lowercase: { plug-in config }
 })
 ```
-
-<br>
-<h2>§2 Parameters</h2>
-
-<ul>
-<li>GIF links (multiple GIFS can be passed).</li>
-<li>Wrapper selector.</li>
-<li>Options:<br>
-
-<ul>
-<li>
-
-`player: {...}` This is the workspace where we are going to assign our parameters.
-</li>
-<li>
-
-`fps:` sets fps. Default is 60.
-</li>
-<li>
-
-`frame:` sets starting frame (if passed index is invalid, player will run from default value). Default is 0.
-</li>
-<li>
-
-`autoplay:` sets autoplay. Default is false.
-</li>
-<li>
-
-`direction:` `GIFPlayerV2.states.BACKWARD` || `GIFPlayerV2.states.FORWARD` sets the play direction. Default is `GIFPlayerV2.states.FORWARD`.
-</li><br>
-<li>
-
-`plugins`: binds built-in plug-ins `[GIFPlayer.AllPlugins.PLG_NAME...]`.
-</li>
-<li>
-
-`PLG_NAME: { ... }` set up plug in config.
-</li>
-</ul>
-
-</li>
-</ul>
 <br>
 
-<h2>§3 Functions</h2>
+## §2 Parameters
++ GIF links (multiple GIFS can be passed).</li>
++ Wrapper selector.</li>
++ Options:<br>
+  * `player: {...}` This is the workspace where we are going to assign our parameters.
+  * `fps:` sets fps. Default is 60.
+  * `frame:` sets starting frame (if passed index is invalid, player will run from default value). Default is 0.
+  * `autoplay:` sets autoplay. Default is false.
+  * `direction:` `GIFPlayerV2.states.BACKWARD` || `GIFPlayerV2.states.FORWARD` sets the play direction. Default is `GIFPlayerV2.states.FORWARD`.
+  * `plugins`: binds built-in plug-ins `[GIFPlayer.AllPlugins.PLG_NAME...]`.
+  * `PLG_NAME: { ... }` set up plug in config.
+<br><br>
 
-<h3>Setters</h3>
-
+## §3 Functions
+### Setters
 `.direction`  set play direction.<br/>
 `.frame` set current frame.<br/>
 `.fps` set fps limiter.<br>
 
-<h3>Getters</h3>
-
-`.all` all internal states of the player.  
-`.canvas` canvas HTML element.  
-`.wrapper` wrapper element.  
-`.state` player state.  
-`.frames_length` frames count.  
-`.current_frame_index` current frame index.
-`.current_frame` current frame.
-`.direction` playing direction.
-`.fps` fps limiter-
+### Getters
+`.all` all internal states of the player.<br>
+`.canvas` canvas HTML element.<br>
+`.wrapper` wrapper element.<br>
+`.state` player state.<br>
+`.frames_length` frames count.<br>
+`.current_frame_index` current frame index.<br>
+`.current_frame` current frame.<br>
+`.direction` playing direction.<br>
+`.fps` fps limiter.<br>
 `get_frame(index)` also a getter, but it's function because you have to pass an index.<br>
 
-<h3>Controls</h3>
-
-`play()` play the GIF.<br/>
-`play_forward()` set direction to `GIFPlayer.states.FORWARD` and play.<br/>
-`play_backward()` set direction to `GIFPlayer.states.BACKWARD` and play.<br/>
-`pause()` pause the GIF.<br/>
-`stop()` pause the GIF and jump back to the first frame.<br/>
+### Controls
+`play()` play the GIF.<br>
+`play_forward()` set direction to `GIFPlayer.states.FORWARD` and play.<br>
+`play_backward()` set direction to `GIFPlayer.states.BACKWARD` and play.<br>
+`pause()` pause the GIF.<br>
+`stop()` pause the GIF and jump back to the first frame.<br>
 `reverse()` reverse playing direction.<br>
 `step()` jumps 1 frame forward. (Depends on direction)<br>
 `step_back()` jumps back 1 frame. (Depends on direction)<br>
 
-<h3>GIF Mutators ⭐️<i>From 2.4.0^</i>⭐️</h3>
-
+### GIF Mutators _⭐️from 2.4.0^⭐️_
 `shuffle_frames()` randomly shuffles frames.<br>
 `remove_frames(...indices)` remove frames. <br>
-`add_frames(...imgs)` push new frames.<br/>
+`add_frames(...imgs)` push new frames.<br>
 `remove_gifs(...gifs)` remove GIFs frames.<br>
-`add_gifs(...gifs)` push new GIFs frames.<br/><br/>
+`add_gifs(...gifs)` push new GIFs frames.<br><br>
 
-<h2>§4 Global Vars</h2>
-
+## §4 Global Vars
 ```javascript
 static states = Object.freeze({
     LOADING: 0,  //loading states
@@ -146,56 +106,24 @@ static AllPlugins = Object.freeze({
 ```
 <br>
 
-<h2>§5 Plug-Ins</h2>
+## §5 Plug-Ins
+**Note:** some plug-ins overwrite functions.<br>
 Currently exist 2 plug-ins:
-<ul>
-<li>
++ Scroller `GIFPlayerV2.AllPlugins.Scroller`
+    * Name: Scroller.<br>
+      Description: synchron play-on-scroll animation.<br>
+      Options:
+      - `flow` sets the animation flow during scrolling. Default `[0, 1]`.
+      - `target` sets the scrolling element.<br><br>
++ GUI `GIFPlayerV2.AllPlugins.GUI`
+  * Name: GUI.<br>
+    Description: Interactive GUI Controller.<br>
+    Options:
+    - `wrapper` **Has been removed**.
+    - `animationDuration` sets the GUI animation duration.
+<br><br>
 
-Scroller `GIFPlayerV2.AllPlugins.Scroller`
-</li>
-<li>
-
-GUI `GIFPlayerV2.AllPlugins.GUI`
-</li>
-</ul>
-<br>
-<strong>Note:</strong> some plug-ins overwrite functions.
-<ul>
-<li>
-Name: Scroller.<br>
-Description: synchron play-on-scroll animation.<br>
-Options:
-<ul>
-<li>
-
-`flow` sets the animation flow during scrolling. Default `[0, 1]`.
-</li>
-<li>
-
-`target` sets the scrolling element.
-</li>
-</ul>
-</li>
-<li>
-Name: GUI.<br>
-Description: Interactive GUI Controller.<br>
-Options:
-<ul>
-<li>
-
-`wrapper` Has been removed.
-</li>
-<li>
-
-`animationDuration` sets the GUI animation duration.
-</li>
-</ul>
-</li>
-</ul>
-<br>
-
-<h2>§6 Note</h2>
-<p>
+## §6 Note
 Some GIFs may have artifacts when running backwards.<br>
 The most common reason is compression, which removes unchanged pixels from the next frame.
-</p>
+

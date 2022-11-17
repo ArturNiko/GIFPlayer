@@ -14,7 +14,7 @@ import PluginsController from "./exports/PluginsController.js"
 import Validator from "./exports/Validator.js"
 import Defaults from "./exports/Defaults.js"
 
-export default class GIFPlayerV2{
+export class GIFPlayerV2{
     static states = Object.freeze({
         LOADING: 'loading',
         READY: 'ready',
