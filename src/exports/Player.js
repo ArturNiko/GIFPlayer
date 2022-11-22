@@ -55,6 +55,9 @@ export default {
         this.parent.vars.canvas.style = `
             width: 100%;
             height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
         `
         this.parent.vars.wrapper.appendChild(this.parent.vars.canvas)
         this.parent.vars.ctx = this.parent.vars.canvas.getContext('2d')

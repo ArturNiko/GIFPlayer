@@ -49,8 +49,6 @@ export default class {
     createElements() {
         this.elements.circle = document.createElement('DIV')
 
-        this.parent.canvas.style.position = 'absolute'
-
         this.parent.wrapper.style.display = 'flex'
         this.parent.wrapper.style.justifyContent = 'center'
         this.parent.wrapper.style.alignItems = 'center'

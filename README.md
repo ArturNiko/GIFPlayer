@@ -20,6 +20,7 @@ GIF player, which allows you to control/draw every single frame separately.<br><
 + [Global variables](#4-global-variables)
 + [Plug-Ins](#5-plug-ins)
 + [Note](#6-note)
+<br><br>
 
 ## §0 Installation
 
