@@ -1,17 +1,21 @@
 /**
  * @name GUI
- * @version 0.7.1
+ * @version 0.8.1
  * @author Artur Papikian
  * @description little interactive gui
  * @licence MIT
  *
  */
-import {GIFPlayerV2} from "../../GIFPlayerV2.js"
 
-export default class GUI {
+import GIFPlayerV2 from '../../GIFPlayerV2.js'
+
+export default class {
     name = 'gui'
     parent = {}
-    config = {}
+    config = {
+        hidden: false,
+        animationDuration: 400
+    }
 
     elements = {}
     state = ''
@@ -19,27 +23,30 @@ export default class GUI {
 
     constructor(parent) {
         this.parent = parent
-        this.config = this.parent.vars.plugins.config[this.name] ?? {}
-        this.check()
+        this.check(this.parent.vars.plugins.config[this.name])
+
         this.init()
     }
+
     init() {
         this.createElements()
         this.initEvents()
         this.checkState()
     }
 
-    check() {
-        if (typeof this.config.animationDuration != 'undefined') {
-            if (typeof this.config.animationDuration != 'number' || this.config.animationDuration < 0) {
-                console.warn('Duration should be a positiv number.')
-                this.config.animationDuration = 500
-            }
+    check(config) {
+        if (!(config instanceof Object) || Array.isArray(config) === true) return
+
+        if(typeof config.animationDuration != 'undefined'){
+            if (typeof config.animationDuration != 'number' || config.animationDuration < 0) {
+                console.warn("Duration should be a positiv number.")
+            } else this.config.animationDuration = config.animationDuration
         }
-        else if(typeof this.config.animationDuration == 'undefined') this.config.animationDuration = 500
+
+        if(config.hidden === true) this.config.hidden = true
     }
 
-    createElements () {
+    createElements() {
         this.elements.circle = document.createElement('DIV')
 
         this.parent.canvas.style.position = 'absolute'
@@ -103,6 +110,7 @@ export default class GUI {
             clearTimeout(this.animationTimeout)
             this.state = this.parent.vars.state
 
+            if (this.config.hidden === true) return
             switch (this.parent.vars.state) {
                 case GIFPlayerV2.states.PLAYING:
                     this.playing()
@@ -121,9 +129,11 @@ export default class GUI {
                     this.error()
                     break
             }
+
         }
-        if(this.state !== GIFPlayerV2.states.ERROR) window.requestAnimationFrame(() => this.checkState())
+        if (this.state !== GIFPlayerV2.states.ERROR) window.requestAnimationFrame(() => this.checkState())
     }
+
     playing() {
         this.elements.circle.style.transform = 'scale(.8)'
         this.elements.circle.style.opacity = '0'
@@ -132,7 +142,8 @@ export default class GUI {
             this.elements.circle.style.display = 'none'
         }, this.config.animationDuration)
     }
-    paused () {
+
+    paused() {
         this.elements.circle.style.display = 'flex'
         this.elements.circle.innerHTML = 'PLAY'
 
@@ -141,11 +152,13 @@ export default class GUI {
             this.elements.circle.style.opacity = '1'
         }, 0)
     }
-    loading () {
+
+    loading() {
         this.elements.circle.style.display = 'flex'
         this.elements.circle.innerHTML = 'LOAD'
     }
-    error () {
+
+    error() {
         this.elements.circle.style.display = 'flex'
         this.elements.circle.innerHTML = 'ERR'
     }

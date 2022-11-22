@@ -5,15 +5,31 @@
 
 GIF player, which allows you to control/draw every single frame separately.<br><br>
 
+## Navigation 
+
++ [Installation](#0-installation)
++ [Initialization](#1-initialization)
+  * [Import](#import-into-js-module)
+  * [Import](#usage)
++ [Parameters](#2-parameters)
++ [Functions](#3-functions)
+  * [Setters](#setters)
+  * [Getters](#getters)
+  * [Controls](#controls)
+  * [GIF mutators](#gif-mutators)
++ [Global variables](#4-global-variables)
++ [Plug-Ins](#5-plug-ins)
++ [Note](#6-note)
+
 ## §0 Installation
 
-`npm i js-gifplayer --save`<br><br>
+`npm i js-gifplayer`<br><br>
 
 
 ## §1 Initialization
-### Import
+### Import into JS module
 ``` js
-import {GIFPlayerV2} from "js-gifplayer"
+import GIFPlayerV2 from "js-gifplayer" // or path to GIFPlayerV2.js
 ```
 <br>
 
@@ -65,6 +81,7 @@ const player = new GIFPlayer(sources, '#wrappper', {
 `.current_frame` current frame.<br>
 `.direction` playing direction.<br>
 `.fps` fps limiter.<br>
+`.urls` gifs urls and its frame indexes.<br>
 `get_frame(index)` also a getter, but it's function because you have to pass an index.<br>
 
 ### Controls
@@ -74,19 +91,19 @@ const player = new GIFPlayer(sources, '#wrappper', {
 `pause()` pause the GIF.<br>
 `stop()` pause the GIF and jump back to the first frame.<br>
 `reverse()` reverse playing direction.<br>
-`step()` jumps 1 frame forward. (Depends on direction)<br>
-`step_back()` jumps back 1 frame. (Depends on direction)<br>
+`step(count)` jumps `count` frames forward. (Depends on direction)<br>
+`step_back(count)` jumps back `count` frame. (Depends on direction)<br>
 
-### GIF Mutators _⭐️from 2.4.0^⭐️_
+### GIF Mutators
 `shuffle_frames()` randomly shuffles frames.<br>
 `remove_frames(...indices)` remove frames. <br>
 `add_frames(...imgs)` push new frames.<br>
 `remove_gifs(...gifs)` remove GIFs frames.<br>
 `add_gifs(...gifs)` push new GIFs frames.<br><br>
 
-## §4 Global Vars
+## §4 Global variables
 ```javascript
-static states = Object.freeze({
+static States = Object.freeze({
     LOADING: 0,  //loading states
     READY: 1,
     PAUSED: 2,
@@ -111,16 +128,16 @@ static AllPlugins = Object.freeze({
 Currently exist 2 plug-ins:
 + Scroller `GIFPlayerV2.AllPlugins.Scroller`
     * Name: Scroller.<br>
-      Description: synchron play-on-scroll animation.<br>
-      Options:
-      - `flow` sets the animation flow during scrolling. Default `[0, 1]`.
-      - `target` sets the scrolling element.<br><br>
-+ GUI `GIFPlayerV2.AllPlugins.GUI`
+    * Description: synchron play-on-scroll animation.<br>
+    * Options:
+      - `flow` set the animation flow during scrolling. Default `[0, 1]`.
+      - `target` set the scrolling element.<br><br>
++ GUI `GIFPlayerV2.AllPlugins.GUI` 
   * Name: GUI.<br>
-    Description: Interactive GUI Controller.<br>
-    Options:
-    - `wrapper` **Has been removed**.
-    - `animationDuration` sets the GUI animation duration.
+  * Description: Interactive GUI Controller.<br>
+  * Options:
+    - `hidden` hide GUI visuals. Default `false`.
+    - `animationDuration` set GUIs animation duration. 
 <br><br>
 
 ## §6 Note

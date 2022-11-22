@@ -2,4 +2,4 @@
 .DS_Store
 .idea
 examples
-src/exports/CallsQueuer.js
+node_modules

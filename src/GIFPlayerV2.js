@@ -1,6 +1,6 @@
 /**
  * @name GIFPlayerV2
- * @version 2.4.1
+ * @version 2.4.5
  * @author Artur Papikian
  * @description small GIF controller
  * @licence MIT
@@ -13,8 +13,9 @@ import GIFPlayer from "./exports/Player.js"
 import PluginsController from "./exports/PluginsController.js"
 import Validator from "./exports/Validator.js"
 import Defaults from "./exports/Defaults.js"
+import Throttling from "./exports/Throttling.js"
 
-export class GIFPlayerV2{
+export default class GIFPlayerV2{
     static states = Object.freeze({
         LOADING: 'loading',
         READY: 'ready',
@@ -41,11 +42,12 @@ export class GIFPlayerV2{
         gifs: [],
         frames: [],
 
-        queue: {
+        loadQueue: {
             list: [],
             resolved: [],
         },
-
+        callQueue: [],
+        calls: 0,
         currIndex: 0,
         fps: 60,
         state: 'loading',
@@ -65,7 +67,12 @@ export class GIFPlayerV2{
     background = {}
 
     constructor(url, canvasSelector, config) {
-        Object.assign(this.background, GIFPlayer, GIFLoader, PluginsController, Validator)
+        Object.assign(this.background,
+            GIFPlayer,
+            GIFLoader,
+            PluginsController,
+            Validator,
+            Throttling)
         this.background.construct(url, canvasSelector, config, this)
     }
 
@@ -73,131 +80,166 @@ export class GIFPlayerV2{
     play(){
         return new Promise(async resolve => {
             await this.background.awaitGIFLoad()
-            if (!(this.vars.state === GIFPlayerV2.states.ERROR || this.vars.state === GIFPlayerV2.states.PLAYING)){
-
-                await this.pause()
-                this.vars.state = GIFPlayerV2.states.PLAYING
-                this.background.animate()
-                resolve()
-            }
+            if (this.vars.state === GIFPlayerV2.states.ERROR || this.vars.state === GIFPlayerV2.states.PLAYING) return resolve()
+            this.vars.state = GIFPlayerV2.states.PLAYING
+            this.background.animate()
+            resolve()
         })
     }
 
     pause() {
         return new Promise(async resolve => {
             await this.background.awaitGIFLoad()
-            if(!(this.vars.state === GIFPlayerV2.states.ERROR)) {
-                this.vars.state = GIFPlayerV2.states.PAUSED
-                resolve()
-            }
+            if(this.vars.state === GIFPlayerV2.states.ERROR) return resolve()
+
+            this.vars.state = GIFPlayerV2.states.PAUSED
+            resolve()
         })
     }
 
-    async play_backward(){
-        this.direction = GIFPlayerV2.states.BACKWARD
-        await this.play()
+     play_backward(){
+        return new Promise(async resolve => {
+            this.direction = GIFPlayerV2.states.BACKWARD
+            await this.play()
+            resolve()
+        })
+
 
     }
 
-    async play_forward(){
-        this.direction = GIFPlayerV2.states.FORWARD
-        await this.play()
+    play_forward(){
+        return new Promise(async resolve => {
+            this.direction = GIFPlayerV2.states.FORWARD
+            await this.play()
+            resolve()
+        })
     }
 
-    async stop(){
-        await this.pause()
-        this.frame = 0
+    stop(){
+        return new Promise(async resolve => {
+            await this.pause()
+            this.frame = 0
+            resolve()
+        })
+
     }
 
-    async reverse(){
+    reverse(){
         if(this.vars.direction === GIFPlayerV2.states.FORWARD) this.direction = GIFPlayerV2.states.BACKWARD
         else this.direction = GIFPlayerV2.states.FORWARD
     }
 
-    async step(){
-        this.frame = this.vars.frames[this.current_frame_index + 1] ? this.current_frame_index + 1 : 0
+    step(count = 1){
+        this.frame = (this.current_frame_index + count) % (this.vars.frames.length - 1)
     }
 
-    async step_back(){
-        this.frame = this.vars.frames[this.current_frame_index - 1] ? this.current_frame_index - 1 : this.vars.frames.length - 1
+    step_back(count = 1){
+        this.frame = this.vars.frames[this.current_frame_index - count] ? this.current_frame_index - count : (this.vars.frames.length - 1) + this.current_frame_index - count
+
     }
 
     //GIF MUTATORS
-    async shuffle_frames(){
-        await this.background.awaitGIFLoad()
-        //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-        for (let i = this.vars.frames.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
-            ;[this.vars.frames[i], this.vars.frames[j]] = [this.vars.frames[j], this.vars.frames[i]]
-        }
+    shuffle_frames(){
+        return new Promise(async resolve => {
+            await this.background.awaitGIFLoad()
 
-    }
-
-    async add_frames(...sources){
-        await this.background.awaitGIFLoad()
-        this.background.validateURLS(sources)
-        await this.background.loadGifFrames(sources)
-    }
-
-    async remove_frames(...indexes){
-        const stateBuffer = this.vars.state
-
-        let bufferedFrameIndex = this.current_frame_index
-        const toRemove = []
-        indexes.forEach(index => {
-            if(this.get_frame(index)) toRemove.push(this.get_frame(index))
+            if(this.vars.state === GIFPlayerV2.states.ERROR) return resolve()
+            //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+            for (let i = this.vars.frames.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1))
+                ;[this.vars.frames[i], this.vars.frames[j]] = [this.vars.frames[j], this.vars.frames[i]]
+            }
         })
+    }
 
-        toRemove.forEach(frame => {
-            this.vars.gifs.forEach(url => {
-                const i = this.vars.gifs.indexOf(url)
-                if(url.frames.includes(frame)){
-                    this.vars.gifs[i].frames.splice(this.vars.gifs[i].frames.indexOf(frame), 1)
-                }
-                if(this.vars.gifs[i].frames.length === 0) this.vars.gifs.splice(i , 1)
+    add_frames(...sources){
+        return new Promise(async resolve => {
+            await this.background.awaitGIFLoad()
+            if (this.vars.state === GIFPlayerV2.states.ERROR) return resolve()
+
+            this.background.validateURLS(sources)
+            await this.background.loadGifFrames(sources)
+            resolve()
+        })
+    }
+
+    remove_frames(...indexes){
+        return new Promise(async resolve => {
+            await this.background.awaitGIFLoad()
+            if(this.vars.state === GIFPlayerV2.states.ERROR) return resolve()
+
+            const stateBuffer = this.vars.state
+            let bufferedFrameIndex = this.current_frame_index
+            const toRemove = []
+            indexes.forEach(index => {
+                if(this.get_frame(index)) toRemove.push(this.get_frame(index))
             })
 
-            this.vars.frames.splice(this.vars.frames.indexOf(frame), 1)
-            this.frame = 0
+            toRemove.forEach(frame => {
+                this.vars.gifs.forEach(url => {
+                    const i = this.vars.gifs.indexOf(url)
+                    if(url.frames.includes(frame)){
+                        this.vars.gifs[i].frames.splice(this.vars.gifs[i].frames.indexOf(frame), 1)
+                    }
+                    if(this.vars.gifs[i].frames.length === 0) this.vars.gifs.splice(i , 1)
+                })
+
+                this.vars.frames.splice(this.vars.frames.indexOf(frame), 1)
+                this.frame = 0
+            })
+            resolve()
         })
     }
 
 
     async remove_gifs(...gifs){
-        const frames = []
-        gifs.forEach(gif => {
-            this.vars.gifs.forEach(url => {
-                if(url.src === gif) url.frames.forEach(frame => frames.push(this.vars.frames.indexOf(frame)))
-            })
-        })
+        return new Promise(async resolve => {
+            await this.background.awaitGIFLoad()
+            if (this.vars.state === GIFPlayerV2.states.ERROR) return resolve()
 
-        await this.remove_frames(...frames)
+            const frames = []
+            gifs.forEach(gif => {
+                this.vars.gifs.forEach(url => {
+                    if (url.src === gif) url.frames.forEach(frame => frames.push(this.vars.frames.indexOf(frame)))
+                })
+            })
+
+            await this.remove_frames(...frames)
+        })
     }
 
-    async add_gifs(...gifs){
-        await this.background.awaitGIFLoad()
-        this.background.validateURLS(gifs)
+    add_gifs(...gifs){
+        return new Promise( async resolve => {
+            await this.background.awaitGIFLoad()
+            if(this.vars.state === GIFPlayerV2.states.ERROR) return resolve()
+            this.background.validateURLS(gifs)
 
-        await this.background.loadGif(gifs)
+            await this.background.loadGif(gifs)
+            resolve()
+        })
     }
 
 
     //SETTERS
     set direction(direction){
         //also frames mutator
-        const frame = this.vars.frames[this.vars.currIndex]
+        return new Promise(async resolve => {
+            await this.background.awaitGIFLoad()
+            if(this.vars.state === GIFPlayerV2.states.ERROR) return resolve()
 
-        if(direction === GIFPlayerV2.states.BACKWARD){
-            if(this.direction === GIFPlayerV2.states.FORWARD) this.vars.frames.reverse()
-            this.vars.direction = direction
-        }
+            const frame = this.vars.frames[this.vars.currIndex]
+            if(direction === GIFPlayerV2.states.BACKWARD){
+                if(this.direction === GIFPlayerV2.states.FORWARD) this.vars.frames.reverse()
+                this.vars.direction = direction
+            }
+            else if(direction === GIFPlayerV2.states.FORWARD){
+                if(this.direction === GIFPlayerV2.states.BACKWARD) this.vars.frames.reverse()
+                this.vars.direction = direction
+            }
 
-        else if(direction === GIFPlayerV2.states.FORWARD){
-            if(this.direction === GIFPlayerV2.states.BACKWARD) this.vars.frames.reverse()
-            this.vars.direction = direction
+            this.frame = this.vars.frames.indexOf(frame)
+        })
 
-        }
-        this.frame = this.vars.frames.indexOf(frame)
     }
 
     set fps(fps){
@@ -208,11 +250,10 @@ export class GIFPlayerV2{
     set frame(index){
         return new Promise(async resolve => {
             await this.background.awaitGIFLoad()
+            if(this.vars.state === GIFPlayerV2.states.ERROR) return resolve()
 
-            if(this.vars.state !== GIFPlayerV2.states.ERROR){
-                if((typeof index === 'number') && (index >= 0 && index < this.vars.frames.length)) this.vars.currIndex = index
-                if(this.vars.state !== GIFPlayerV2.states.PLAYING) this.background.draw()
-            }
+            if((typeof index === 'number') && (index >= 0 && index < this.vars.frames.length)) this.vars.currIndex = index
+            if(this.vars.state !== GIFPlayerV2.states.PLAYING) this.background.draw()
             resolve()
         })
     }
@@ -228,7 +269,6 @@ export class GIFPlayerV2{
     get current_frame()             { return this.vars.frames[this.current_frame_index]}
     get direction()                 { return this.vars.direction }
     get fps()                       { return this.vars.fps }
-    //get gifs()                      { return this.vars.gifs}
+    get gifs()                      { return this.vars.gifs }
     get_frame(index)                { return (index >= 0 && index < this.vars.frames.length) ? this.vars.frames[index] : this.vars.frames[this.vars.currIndex] }
-
 }

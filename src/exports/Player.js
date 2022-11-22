@@ -1,4 +1,4 @@
-import {GIFPlayerV2} from "../GIFPlayerV2.js";
+import GIFPlayerV2 from "../GIFPlayerV2.js"
 
 export default {
     helpers: {
@@ -28,12 +28,13 @@ export default {
         this.parent.vars.fps = config.player.fps ?? Math.ceil(this.parent.vars.fps)
 
         this.build()
-
+        this.setUpPlugIns(config)
         this.init(config, urls).then()
     },
 
     //INIT
-    async init(config, urls){
+    async init(config, urls) {
+        this.initThrottling()
         await this.loadGif(urls)
         await this.awaitGIFLoad()
 
@@ -46,8 +47,6 @@ export default {
             }
             else this.draw()
         }
-
-        this.setUpPlugIns(config)
 
     },
 

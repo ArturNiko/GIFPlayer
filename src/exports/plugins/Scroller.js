@@ -1,23 +1,25 @@
 /**
  * @name Scroller
- * @version 1.1.2
+ * @version 1.1.3
  * @author Artur Papikian
  * @description synchron play-on-scroll animation
  * @licence MIT
  *
  */
 
-export default class Scroller{
+export default class {
     name = 'scroller'
     parent = {}
-    config = {}
+    config = {
+        flow: [0, 1],
+        target: window
+    }
 
     progress = 0
 
     constructor(parent) {
         this.parent = parent
-        this.config = this.parent.vars.plugins.config[this.name] ?? {}
-        this.check()
+        this.check(this.parent.vars.plugins.config[this.name])
         this.init()
     }
 
@@ -29,24 +31,22 @@ export default class Scroller{
         this.config.target.addEventListener('scroll', () => this.calculate(), {passive: true})
     }
 
-    check() {
-        if (typeof this.config.flow != "undefined" && Array.isArray(this.config.flow) !== true) {
-            console.warn("Flow values must be passed in an array.")
-            this.config.flow = [0, 1]
-        }
-        else if (Array.isArray(this.config.flow) && this.config.flow.some(p => typeof p != "number")) {
-            console.warn("Flow step's values must be a number between 0 and 1.")
-            this.config.flow = [0, 1]
-        }
-        else if (typeof this.config.flow == "undefined") this.config.flow = [0, 1]
+    check(config) {
+        if (!(config instanceof Object) || Array.isArray(config) === true) return
 
-        if(this.parent.background.helpers.isHTMLElement(this.config.target) !== true && this.config.target !== window) {
-            this.config.target = window
+        if(typeof config.flow != 'undefined'){
+            if (Array.isArray(config.flow) !== true) {
+                console.warn("Flow values must be passed in an array.")
+            } else if (config.flow.some(p => typeof p != 'number')) {
+                console.warn("Flow step's values must be a number between 0 and 1.")
+            } else this.config.flow = config.flow
         }
+
+        if (this.parent.background.helpers.isHTMLElement(config.target) === true) this.config.target = config.target
     }
 
     overwrite() {
-        this.parent.reverse = this.reverse
+        this.parent.reverse = this.reverse.bind(this.parent)
 
         //emptying
         this.parent.play
@@ -57,7 +57,9 @@ export default class Scroller{
             = this.parent.pause
             = this.parent.stop
             = this.parent.step
-            = function () { console.warn('This function was overwritten by the plug-in') }
+            = function () {
+            console.warn('This function was overwritten by the plug-in')
+        }
 
         this.parent.vars.flow = this.config.flow
     }
@@ -79,8 +81,7 @@ export default class Scroller{
         if (this.config.target === window) {
             this.config.scrollHeight = document.body.scrollHeight - window.innerHeight
             this.config.scrollTop = this.config.target.scrollY
-        }
-        else {
+        } else {
             this.config.scrollHeight = this.config.target.scrollHeight - this.config.target.offsetHeight
             this.config.scrollTop = this.config.target.scrollTop
         }
@@ -97,7 +98,6 @@ export default class Scroller{
                     pointA >= pointB
                 )
             }
-
             return pointB
         })
     }

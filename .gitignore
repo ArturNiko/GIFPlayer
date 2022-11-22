@@ -1,5 +1,4 @@
 .*.swp
 .DS_Store
 .idea
-src/exports/CallsQueuer.js
-
+node_modules
