@@ -1,6 +1,6 @@
 /**
  * @name GIFPlayerV2
- * @version 2.4.5
+ * @version 2.4.6
  * @author Artur Papikian
  * @description small GIF controller
  * @licence MIT
