@@ -34,6 +34,7 @@ export default {
 
     //INIT
     async init(config, urls) {
+        await this.loadComponents()
         this.initThrottling()
         await this.loadGif(urls)
         await this.awaitGIFLoad()
@@ -61,6 +62,14 @@ export default {
         `
         this.parent.vars.wrapper.appendChild(this.parent.vars.canvas)
         this.parent.vars.ctx = this.parent.vars.canvas.getContext('2d')
+    },
+
+    async loadComponents(){
+        await import("./parser/pkg/rust.js").then(async m => {
+            await m.default()
+            this.parent.background.parse = m.parse
+        })
+
     },
 
     //CANVAS

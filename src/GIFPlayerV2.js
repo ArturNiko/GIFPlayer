@@ -1,6 +1,6 @@
 /**
  * @name GIFPlayerV2
- * @version 2.4.6
+ * @version 2.5.0
  * @author Artur Papikian
  * @description small GIF controller
  * @licence MIT
@@ -41,7 +41,6 @@ export default class GIFPlayerV2{
         ctx: {},
         gifs: [],
         frames: [],
-
         loadQueue: {
             list: [],
             resolved: [],
@@ -61,10 +60,15 @@ export default class GIFPlayerV2{
         }
     }
 
+    //Background methods
+    background = {
+        //dynamically loaded WASM assets & more
+        dyn: {}
+    }
+
     static defaults = Defaults
 
-    //Background methods
-    background = {}
+
 
     constructor(url, canvasSelector, config) {
         Object.assign(this.background,
