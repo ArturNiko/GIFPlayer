@@ -1,4 +1,4 @@
-import GIFPlayerV2 from "../GIFPlayerV2.js"
+import GIFPlayerV2 from "../../GIFPlayerV2.js"
 
 export default {
     //LOAD & PARSE

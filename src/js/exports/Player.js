@@ -1,4 +1,4 @@
-import GIFPlayerV2 from "../GIFPlayerV2.js"
+import GIFPlayerV2 from "../../GIFPlayerV2.js"
 
 export default {
     helpers: {
@@ -53,6 +53,7 @@ export default {
 
     build(){
         this.parent.vars.canvas = document.createElement('canvas')
+        this.parent.vars.canvas.classList.add('gif-player')
         this.parent.vars.canvas.style = `
             width: 100%;
             height: 100%;

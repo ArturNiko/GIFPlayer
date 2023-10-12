@@ -1,0 +1,36 @@
+.gif-player .gui-circle {
+    display: none;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -moz-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    padding: 20px;
+    width: 35px;
+    height: 35px;
+    outline: 2px dashed #fff;
+    outline-offset: -5px;
+    position: absolute;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    background-color: #000000a0;
+    margin: auto 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    -webkit-transition: 400ms ease-in-out;
+    -o-transition: 400ms ease-in-out;
+    -moz-transition: 400ms ease-in-out;
+    transition: 400ms ease-in-out;
+}

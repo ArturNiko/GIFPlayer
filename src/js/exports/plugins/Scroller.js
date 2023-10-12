@@ -23,7 +23,7 @@ export default class {
         this.init()
     }
 
-    init(parent) {
+    init() {
         this.parent.pause()
         this.overwrite()
         this.precalculate()
@@ -58,7 +58,7 @@ export default class {
             = this.parent.stop
             = this.parent.step
             = function () {
-            console.warn('This function was overwritten by the plug-in')
+            console.warn('This function was overwritten by the plug-in.')
         }
 
         this.parent.vars.flow = this.config.flow
@@ -102,7 +102,7 @@ export default class {
         })
     }
 
-    calculateStep(a, b, forward) {
+    calculateStep(a, b) {
         const flowStepSize = this.config.flow[b] - this.config.flow[a]
         const inSectionStep = (this.config.scrollTop - this.config.scrollZonesDelimiters[a]) / this.config.scrollZonesHeight * flowStepSize
         this.progress = (this.config.flow[a] + inSectionStep) * 100

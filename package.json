@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/ArturNiko/GIFPlayer/issues"
   },
-  "homepage": "https://github.com/ArturNiko/GIFPlayer#readme"
+  "homepage": "https://github.com/ArturNiko/GIFPlayer#readme",
+  "devDependencies": {
+    "vite": "^4.4.11"
+  }
 }

@@ -1,4 +1,4 @@
-import GIFPlayerV2 from "../GIFPlayerV2.js"
+import GIFPlayerV2 from "../../GIFPlayerV2.js"
 
 export default {
     lookForPlugIns(){
@@ -12,7 +12,7 @@ export default {
     loadPlugInByName(name) {
         if(Object.values(GIFPlayerV2.AllPlugins).includes(name) !== true) throw new Error("Plug-ins name list doesn't contain passed plug-in name.")
         //Dynamically load plugins
-        import(`./plugins/${name}.js`).then(plugin => {
+        import(`/src/js/exports/plugins/${name}.js`).then(plugin => {
             this.parent.vars.plugins.loaded[name] = new plugin.default(this.parent)
         }).catch(err => {
             throw new Error(err)

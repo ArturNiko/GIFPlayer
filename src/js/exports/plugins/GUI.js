@@ -7,28 +7,31 @@
  *
  */
 
-import GIFPlayerV2 from '../../GIFPlayerV2.js'
+import GIFPlayerV2 from '../../../GIFPlayerV2.js'
 
 export default class {
     name = 'gui'
     parent = {}
     config = {
         hidden: false,
-        animationDuration: 400
     }
+    stylePath = '/src/css/gui.css'
 
     elements = {}
     state = ''
-    animationTimeout
+
 
     constructor(parent) {
         this.parent = parent
         this.check(this.parent.vars.plugins.config[this.name])
 
-        this.init()
+        this.init().then()
     }
 
-    init() {
+    async init() {
+        await this.preloadStyle().catch(_ => {
+            console.error('Could not load style for ' + this.name + ' plugin')
+        })
         this.createElements()
         this.initEvents()
         this.checkState()
@@ -37,58 +40,26 @@ export default class {
     check(config) {
         if (!(config instanceof Object) || Array.isArray(config) === true) return
 
-        if(typeof config.animationDuration != 'undefined'){
-            if (typeof config.animationDuration != 'number' || config.animationDuration < 0) {
-                console.warn("Duration should be a positiv number.")
-            } else this.config.animationDuration = config.animationDuration
-        }
-
         if(config.hidden === true) this.config.hidden = true
+    }
+
+    async preloadStyle() {
+        return new Promise((resolve, reject) => {
+            if(document.querySelector('link.gui-style')) reject()
+            const link = document.createElement('link')
+            link.setAttribute('rel', 'stylesheet')
+            link.setAttribute('type', 'text/css')
+            link.setAttribute('href', this.stylePath)
+            link.onload = resolve
+            link.onerror = reject
+            document.head.append(link)
+        })
     }
 
     createElements() {
         this.elements.circle = document.createElement('DIV')
 
-        this.parent.wrapper.style.display = 'flex'
-        this.parent.wrapper.style.justifyContent = 'center'
-        this.parent.wrapper.style.alignItems = 'center'
-
-        this.elements.circle.style = `
-            display: none;
-            -webkit-box-align: center;
-            -webkit-align-items: center;
-               -moz-box-align: center;
-                -ms-flex-align: center;
-                    align-items: center;
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
-               -moz-box-pack: center;
-                -ms-flex-pack: center;
-                    justify-content: center;
-            -webkit-border-radius: 50%;
-               -moz-border-radius: 50%;
-                    border-radius: 50%;
-            padding: 20px;
-            width: 35px;
-            height: 35px;
-            outline: 2px dashed #fff;
-            outline-offset: -5px;
-            position: relative;
-            color: white;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 600;
-            background-color: #000000a0;
-            margin: auto 0;
-            -webkit-user-select: none;
-               -moz-user-select: none;
-                -ms-user-select: none;
-                    user-select: none;
-            cursor: pointer;
-            -webkit-transition: ${this.config.animationDuration}ms ease-in-out;
-            -o-transition: ${this.config.animationDuration}ms ease-in-out;
-            -moz-transition: ${this.config.animationDuration}ms ease-in-out;
-            transition: ${this.config.animationDuration}ms ease-in-out;
-        `
+        this.elements.circle.classList.add('gui-circle')
         this.parent.wrapper.appendChild(this.elements.circle)
     }
 
@@ -98,8 +69,11 @@ export default class {
             else if (this.parent.vars.state === GIFPlayerV2.states.PAUSED || this.parent.vars.state === GIFPlayerV2.states.READY) this.parent.play()
         }
 
-        this.parent.canvas.addEventListener('click', () => evToggle())
-        this.elements.circle.addEventListener('click', () => evToggle())
+        ;['touchstart', 'click'].forEach(event => {
+            this.parent.wrapper.addEventListener(event, evToggle)
+        })
+
+
 
     }
 
@@ -133,7 +107,7 @@ export default class {
     }
 
     playing() {
-        this.elements.circle.style.transform = 'scale(.8)'
+        this.elements.circle.style.scale = '.8'
         this.elements.circle.style.opacity = '0'
 
         this.animationTimeout = setTimeout(() => {
@@ -146,7 +120,7 @@ export default class {
         this.elements.circle.innerHTML = 'PLAY'
 
         this.animationTimeout = setTimeout(() => {
-            this.elements.circle.style.transform = 'scale(1)'
+            this.elements.circle.style.scale = '1'
             this.elements.circle.style.opacity = '1'
         }, 0)
     }

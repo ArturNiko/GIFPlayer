@@ -8,12 +8,12 @@
  */
 
 
-import GIFLoader from "./exports/Loader.js"
-import GIFPlayer from "./exports/Player.js"
-import PluginsController from "./exports/PluginsController.js"
-import Validator from "./exports/Validator.js"
-import Defaults from "./exports/Defaults.js"
-import Throttling from "./exports/Throttling.js"
+import GIFLoader from "./js/exports/Loader.js"
+import GIFPlayer from "./js/exports/Player.js"
+import PluginsController from "./js/exports/PluginsController.js"
+import Validator from "./js/exports/Validator.js"
+import Defaults from "./js/exports/Defaults.js"
+import Throttling from "./js/exports/Throttling.js"
 
 export default class GIFPlayerV2{
     static states = Object.freeze({
@@ -33,6 +33,7 @@ export default class GIFPlayerV2{
     static AllPlugins = Object.freeze({
         Scroller: 'scroller',
         GUI: 'gui',
+        GUI2: 'gui2',
     })
 
     vars = {
