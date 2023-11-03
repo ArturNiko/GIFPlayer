@@ -53,7 +53,7 @@ export default {
 
     build(){
         this.parent.vars.canvas = document.createElement('canvas')
-        this.parent.vars.canvas.classList.add('gif-player')
+        this.parent.vars.wrapper.classList.add('gif-player')
         this.parent.vars.canvas.style = `
             width: 100%;
             height: 100%;
@@ -67,7 +67,7 @@ export default {
 
     async loadComponents(){
         await import("./parser/pkg/rust.js").then(async m => {
-            await m.default()
+            if(m.default instanceof Function) await m.default()
             this.parent.background.parse = m.parse
         })
 

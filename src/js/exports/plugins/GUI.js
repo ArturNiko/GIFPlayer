@@ -29,9 +29,7 @@ export default class {
     }
 
     async init() {
-        await this.preloadStyle().catch(_ => {
-            console.error('Could not load style for ' + this.name + ' plugin')
-        })
+        await this.preloadStyle().catch(_ => console.error('Could not load style for ' + this.name + ' plugin'))
         this.createElements()
         this.initEvents()
         this.checkState()
@@ -47,12 +45,13 @@ export default class {
         return new Promise((resolve, reject) => {
             if(document.querySelector('link.gui-style')) reject()
             const link = document.createElement('link')
+            link.setAttribute('class', 'gui-style')
             link.setAttribute('rel', 'stylesheet')
             link.setAttribute('type', 'text/css')
             link.setAttribute('href', this.stylePath)
-            link.onload = resolve
-            link.onerror = reject
             document.head.append(link)
+
+            ;[link.onload, link.onerror] = [resolve, reject]
         })
     }
 
@@ -79,7 +78,6 @@ export default class {
 
     checkState() {
         if (this.state !== this.parent.vars.state) {
-            clearTimeout(this.animationTimeout)
             this.state = this.parent.vars.state
 
             if (this.config.hidden === true) return
@@ -107,31 +105,19 @@ export default class {
     }
 
     playing() {
-        this.elements.circle.style.scale = '.8'
-        this.elements.circle.style.opacity = '0'
-
-        this.animationTimeout = setTimeout(() => {
-            this.elements.circle.style.display = 'none'
-        }, this.config.animationDuration)
+        this.elements.circle.classList.add('hidden')
     }
 
     paused() {
-        this.elements.circle.style.display = 'flex'
         this.elements.circle.innerHTML = 'PLAY'
-
-        this.animationTimeout = setTimeout(() => {
-            this.elements.circle.style.scale = '1'
-            this.elements.circle.style.opacity = '1'
-        }, 0)
+        this.elements.circle.classList.remove('hidden')
     }
 
     loading() {
-        this.elements.circle.style.display = 'flex'
         this.elements.circle.innerHTML = 'LOAD'
     }
 
     error() {
-        this.elements.circle.style.display = 'flex'
         this.elements.circle.innerHTML = 'ERR'
     }
 }

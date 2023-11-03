@@ -6,7 +6,6 @@
     <title>Index</title>
 </head>
 <body style="margin: 0; height: 4000px">
-    <section></section>
     <div id="gif-1" style="position: fixed; width: 50vw; height: 50vh;"></div>
     <div id="gif-2" style="position: fixed; right: 0; width: 50vw; height: 50vh;"></div>
     <script type="module">
@@ -23,7 +22,7 @@
                 fps: 20,
                 frame: 1
             },
-            //plugins: ['gui2'],
+            plugins: ['gui2'],
         })
 
         window.player2 = new GIFPlayerV2('./assets/giphy.gif', '#gif-2', {

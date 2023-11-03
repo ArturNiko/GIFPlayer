@@ -14,10 +14,13 @@ export default class {
     parent = {}
     config = {
         hidden: false,
+        playing: false
     }
+
     stylePath = '/src/css/gui2.css'
 
     elements = {}
+    progress = 0
     state = ''
 
     constructor(parent) {
@@ -34,6 +37,8 @@ export default class {
         this.createElements()
         this.initEvents()
         this.checkState()
+
+        this.update()
     }
 
     check(config) {
@@ -66,7 +71,7 @@ export default class {
         this.elements.circle = document.createElement('DIV')
 
         this.elements.playButton.classList.add('gui2-play-button')
-        this.elements.circle.classList.add('gui2-circle')
+        this.elements.circle.classList.add('gui2-circle', 'transition')
 
         this.elements.circle.append(this.elements.playButton)
         this.parent.wrapper.append(this.elements.circle)
@@ -99,17 +104,36 @@ export default class {
                 else if (this.parent.vars.state === GIFPlayerV2.states.PAUSED || this.parent.vars.state === GIFPlayerV2.states.READY) this.parent.play()
             }
 
+        const setFrame = (e) => {
+                e.stopPropagation()
+                const position = e.clientX - this.elements.timeLine.getBoundingClientRect().x
+                this.progress = Math.round(position / this.elements.timeLine.getBoundingClientRect().width * 100)
+
+                this.parent.frame = Math.round(this.parent.frames_length * this.progress / 100)
+                this.elements.progressLine.style.width = `${this.progress}%`
+            }
+
+
         ;['touchstart', 'click'].forEach(event => {
             this.parent.wrapper.addEventListener(event, evToggle)
         })
 
+        ;['touchstart', 'click'].forEach(event => {
+            this.elements.timeLine.addEventListener(event, setFrame)
+        })
+    }
 
+    update() {
+        const updating = setInterval(() => {
+            this.progress = Math.round(this.parent.current_frame_index / this.parent.frames_length * 100) || 0
+            this.elements.progressLine.style.width = `${this.progress}%`
 
+            if(this.state !== GIFPlayerV2.states.PLAYING) clearInterval(updating)
+        }, this.parent.vars.fps)
     }
 
     checkState() {
         if (this.state !== this.parent.vars.state) {
-            clearTimeout(this.animationTimeout)
             this.state = this.parent.vars.state
 
             if (this.config.hidden === true) return
@@ -137,28 +161,19 @@ export default class {
     }
 
     playing() {
-        this.elements.circle.style.scale = '.8'
-        this.elements.circle.style.opacity = '0'
-
-        this.animationTimeout = setTimeout(() => {
-            this.elements.circle.style.display = 'none'
-        }, this.config.animationDuration)
+        this.update()
+        this.elements.circle.classList.add('hidden')
     }
 
     paused() {
-        this.elements.circle.style.display = 'block'
-
-        this.animationTimeout = setTimeout(() => {
-            this.elements.circle.style.scale = '1'
-            this.elements.circle.style.opacity = '1'
-        }, 0)
+        this.elements.circle.classList.remove('hidden')
     }
 
     loading() {
-        this.elements.circle.style.display = 'block'
+        this.elements.circle.classList.remove('hidden')
     }
 
     error() {
-        this.elements.circle.style.display = 'block'
+        this.elements.circle.style.display = 'hidden'
     }
 }
