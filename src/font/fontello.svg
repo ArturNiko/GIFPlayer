@@ -1,0 +1,16 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2023 by original authors @ fontello.com</metadata>
+<defs>
+<font id="fontello" horiz-adv-x="1000" >
+<font-face font-family="fontello" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="play" unicode="&#xe800;" d="M486 376q14-10 14-26 0-14-14-24l-428-266q-24-16-41-6t-17 40l0 514q0 30 17 40t41-6z" horiz-adv-x="500" />
+
+<glyph glyph-name="pause" unicode="&#xe801;" d="M440 700q90 0 90-64l0-570q0-66-90-66t-90 66l0 570q0 64 90 64z m-350 0q90 0 90-64l0-570q0-66-90-66t-90 66l0 570q0 64 90 64z" horiz-adv-x="530" />
+
+<glyph glyph-name="resize-full" unicode="&#xe802;" d="M476 746l316 0 0-316-100 124-146-152-100 100 152 146z m-230-444l100-100-152-146 122-100-316 0 0 316 100-122z" horiz-adv-x="792" />
+</font>
+</defs>
+</svg>

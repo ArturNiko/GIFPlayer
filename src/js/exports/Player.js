@@ -25,7 +25,7 @@ export default {
 
         this.parent.vars.autoplay = config.player.autoplay === true
         this.parent.vars.currIndex = this.helpers.isPositivNumber(config.player.current_frame) ? config.player.frame : this.parent.vars.currIndex
-        this.parent.vars.fps = config.player.fps ?? Math.ceil(this.parent.vars.fps)
+        this.parent.fps = config.player.fps ?? Math.ceil(this.parent.fps)
 
         this.build()
         this.setUpPlugIns(config)
@@ -87,7 +87,7 @@ export default {
         setTimeout(() => {
             if(this.parent.vars.state === GIFPlayerV2.states.PAUSED) cancelAnimationFrame(this.animate)
             else requestAnimationFrame(this.animate.bind(this))
-        }, 1000 / this.parent.vars.fps)
+        }, 1000 / this.parent.fps)
     },
 
     setCanvasSize(){

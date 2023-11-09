@@ -1,0 +1,116 @@
+@import "fontello.css";
+
+:root {
+  --circle-size: 35px;
+  --navigation-menu-opacity: 0;
+}
+@media only screen and (max-width: 1200px) {
+  :root {
+    --circle-size: 25px;
+    --navigation-menu-opacity: 1;
+  }
+}
+
+
+.gif-player {
+  .gui2-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    display: block;
+    margin: auto 0;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    padding: 20px;
+    width: var(--circle-size);
+    height: var(--circle-size);
+    background-color: #a000ff9a;
+    cursor: pointer;
+
+    &.hidden {
+      cursor: inherit;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(.8);
+    }
+
+    .gui2-play-button {
+      margin-top: 2px;
+      margin-left: 5px;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      border-left: 30px solid #fff8;
+
+    }
+  }
+
+  .gui2-navigation-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: linear-gradient(to top, #0000, #0000);
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+
+    &:hover {
+      height: 45px;
+      background-image: linear-gradient(to top, #000a, #0000);
+    }
+
+    &:hover .gui2-progress-line { padding: 1px 0 !important;}
+    &:hover .gui2-time-line { margin-bottom: 10px; }
+    &:hover .gui2-navigation-menu { opacity: 1; }
+
+    .gui2-time-line{
+      cursor: pointer;
+      width: 96%;
+      height: min-content;
+      margin-bottom: 5px;
+      background-color: #fff8;
+
+      .gui2-progress-line {
+        height: 3px;
+        background-color: #a000ff9a;
+      }
+    }
+
+    .gui2-navigation-menu {
+      opacity: var(--navigation-menu-opacity);
+      display: flex;
+      justify-content: space-between;
+      width: 96%;
+      font-size: 20px;
+
+      .gui2-play-pause-wrapper {
+        position: relative;
+        cursor: pointer;
+
+        .icon-play {
+          font-size: 22px;
+          margin-top: -1px;
+          position: absolute;
+
+          &.hidden { display: none; }
+        }
+        .icon-pause {
+          position: absolute;
+
+          &.hidden { display: none; }
+        }
+      }
+    }
+  }
+
+  .transition {
+    -webkit-transition: 100ms ease-in-out;
+    -o-transition: 100ms ease-in-out;
+    -moz-transition: 100ms ease-in-out;
+    transition: 100ms ease-in-out;
+  }
+}

@@ -22,21 +22,22 @@ export default class {
     elements = {}
     progress = 0
     state = ''
+    smoothSteps = 10
 
     constructor(parent) {
         this.parent = parent
         this.check(this.parent.vars.plugins.config[this.name])
 
-        this.init().then()
+        this.#init().then()
     }
 
-    async init() {
+    async #init() {
         await this.preloadStyle().catch(_ => {
             console.error('Could not load style for ' + this.name + ' plugin')
         })
-        this.createElements()
-        this.initEvents()
-        this.checkState()
+        this.#createElements()
+        this.#initEvents()
+        this.#checkState()
 
         this.update()
     }
@@ -60,13 +61,13 @@ export default class {
         })
     }
 
-    createElements() {
-        this.createPlayButton()
-        this.createNavigation()
-        this.createButtons()
+    #createElements() {
+        this.#createPlayButton()
+        this.#createNavigation()
+        this.#createButtons()
     }
 
-    createPlayButton() {
+    #createPlayButton() {
         this.elements.playButton = document.createElement('DIV')
         this.elements.circle = document.createElement('DIV')
 
@@ -77,62 +78,79 @@ export default class {
         this.parent.wrapper.append(this.elements.circle)
     }
 
-    createNavigation() {
+    #createNavigation() {
         this.elements.navigationBar = document.createElement('div')
         this.elements.timeLine = document.createElement('div')
         this.elements.progressLine = document.createElement('div')
         this.elements.navigationMenu = document.createElement('div')
 
-        this.elements.navigationBar.classList.add('gui2-navigation-bar')
-        this.elements.timeLine.classList.add('gui2-time-line')
-        this.elements.progressLine.classList.add('gui2-progress-line')
-        this.elements.navigationMenu.classList.add('gui2-navigation-menu')
+        this.elements.navigationBar.classList.add('gui2-navigation-bar', 'transition')
+        this.elements.timeLine.classList.add('gui2-time-line', 'transition')
+        this.elements.progressLine.classList.add('gui2-progress-line', 'transition')
+        this.elements.navigationMenu.classList.add('gui2-navigation-menu', 'transition')
 
         this.elements.timeLine.append(this.elements.progressLine)
-        this.elements.navigationMenu.append(this.elements.timeLine)
         this.elements.navigationBar.append(this.elements.timeLine)
+        this.elements.navigationBar.append(this.elements.navigationMenu)
         this.parent.wrapper.append(this.elements.navigationBar)
     }
 
-    createButtons() {
+    #createButtons() {
+        this.elements.playPauseButtonWrapper = document.createElement('div')
+        this.elements.playButton = document.createElement('i')
+        this.elements.pauseButton = document.createElement('i')
+        this.elements.fullscreenButton = document.createElement('i')
 
+        this.elements.playPauseButtonWrapper.classList.add('gui2-play-pause-wrapper')
+        this.elements.playButton.classList.add('icon-play', 'hidden')
+        this.elements.pauseButton.classList.add('icon-pause', 'hidden')
+        this.elements.fullscreenButton.classList.add('icon-resize-full')
+
+        this.elements.playPauseButtonWrapper.append(this.elements.playButton, this.elements.pauseButton)
+        this.elements.navigationMenu.append(document.createElement('div'), this.elements.playPauseButtonWrapper, this.elements.fullscreenButton)
     }
 
-    initEvents() {
-        const evToggle = () => {
-                if (this.parent.vars.state === GIFPlayerV2.states.PLAYING) this.parent.pause()
-                else if (this.parent.vars.state === GIFPlayerV2.states.PAUSED || this.parent.vars.state === GIFPlayerV2.states.READY) this.parent.play()
-            }
-
-        const setFrame = (e) => {
-                e.stopPropagation()
-                const position = e.clientX - this.elements.timeLine.getBoundingClientRect().x
-                this.progress = Math.round(position / this.elements.timeLine.getBoundingClientRect().width * 100)
-
-                this.parent.frame = Math.round(this.parent.frames_length * this.progress / 100)
-                this.elements.progressLine.style.width = `${this.progress}%`
-            }
-
-
-        ;['touchstart', 'click'].forEach(event => {
-            this.parent.wrapper.addEventListener(event, evToggle)
+    #initEvents() {
+        // Wrapper
+        this.parent.wrapper.addEventListener('click', () => {
+            if (this.parent.vars.state === GIFPlayerV2.states.PLAYING) this.parent.pause()
+            else if (this.parent.vars.state === GIFPlayerV2.states.PAUSED || this.parent.vars.state === GIFPlayerV2.states.READY) this.parent.play()
         })
 
-        ;['touchstart', 'click'].forEach(event => {
-            this.elements.timeLine.addEventListener(event, setFrame)
+        //Timeline
+        this.elements.timeLine.addEventListener('click', (e) => {
+            e.stopPropagation()
+            const position = e.clientX - this.elements.timeLine.getBoundingClientRect().x
+            this.progress = Math.round(position / this.elements.timeLine.getBoundingClientRect().width * 100)
+
+            this.parent.frame = Math.round(this.parent.frames_length * this.progress / 100)
+            this.elements.progressLine.style.width = `${this.progress}%`
+        })
+
+        //Menu
+        this.elements.navigationMenu.addEventListener('click', (e) => e.stopPropagation())
+
+        //Buttons
+        this.elements.playButton.addEventListener('click', (e) => {
+            if (this.parent.vars.state === GIFPlayerV2.states.PAUSED || this.parent.vars.state === GIFPlayerV2.states.READY) this.parent.play()
+        })
+        this.elements.pauseButton.addEventListener('click', (e) => {
+            if (this.parent.vars.state === GIFPlayerV2.states.PLAYING) this.parent.pause()
         })
     }
 
     update() {
         const updating = setInterval(() => {
-            this.progress = Math.round(this.parent.current_frame_index / this.parent.frames_length * 100) || 0
+            //@todo: add smooth steps
+            this.progress = this.parent.current_frame_index / this.parent.frames_length * 100 || 0
             this.elements.progressLine.style.width = `${this.progress}%`
 
+
             if(this.state !== GIFPlayerV2.states.PLAYING) clearInterval(updating)
-        }, this.parent.vars.fps)
+        }, 16.666)
     }
 
-    checkState() {
+    #checkState() {
         if (this.state !== this.parent.vars.state) {
             this.state = this.parent.vars.state
 
@@ -157,15 +175,19 @@ export default class {
             }
 
         }
-        if (this.state !== GIFPlayerV2.states.ERROR) window.requestAnimationFrame(() => this.checkState())
+        if (this.state !== GIFPlayerV2.states.ERROR) window.requestAnimationFrame(() => this.#checkState())
     }
 
     playing() {
         this.update()
         this.elements.circle.classList.add('hidden')
+        this.elements.playButton.classList.add('hidden')
+        this.elements.pauseButton.classList.remove('hidden')
     }
 
     paused() {
+        this.elements.pauseButton.classList.add('hidden')
+        this.elements.playButton.classList.remove('hidden')
         this.elements.circle.classList.remove('hidden')
     }
 
